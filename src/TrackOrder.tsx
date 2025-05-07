@@ -1,12 +1,21 @@
+import { useEffect, useState } from "react";
 import styles from "./TrackOrder.module.scss";
+import cover from "./assets/order-status-cover.jpg";
 
-type OrderPhase =
-    | "received"
-    | "opened"
-    | "making"
-    | "ready"
-    | "picked-up"
-    | "arrived";
+// 1. Show loading even when an order was previously loaded
+// 2. Show error message on rejection
+// 3. Find and fix the bug
+
+const orderPhases = [
+    "received",
+    "opened",
+    "making",
+    "ready",
+    "picked-up",
+    "arrived",
+] as const;
+
+type OrderPhase = typeof orderPhases[number];
 
 type Order = {
     id: string,
@@ -20,7 +29,22 @@ type TrackOrderProps = {
     orderId: string,
 };
 
-function getOrderById(id: string): Order {
+async function getOrderById(id: string): Promise<Order> {
+    await new Promise<void>((resolve, reject) => {
+        const delay = (Math.random() * 2000) + 700;
+
+        return setTimeout(
+            () => {
+                if (id === "404") {
+                    reject();
+                } else {
+                    resolve();
+                }
+            },
+            delay
+        );
+    });
+
     return {
         id,
         phase: "making",
@@ -34,32 +58,66 @@ function getOrderById(id: string): Order {
     };
 }
 
+const timestampFormater = new Intl.DateTimeFormat("he", {
+    timeStyle: "short",
+    dateStyle: "short",
+});
+
 export function TrackOrder({ orderId }: TrackOrderProps) {
-    const order = getOrderById(orderId);
+    const [order, setOrder] = useState<Order>();
+
+    useEffect(() => {
+        getOrderById(orderId)
+            .then(setOrder);
+    }, [orderId]);
+
+    if (!order) {
+        return (
+            <main className={styles.container}>
+                <h1>Your order status</h1>
+                <p>Loading...</p>
+            </main>
+        )
+    }
 
     return (
         <main className={styles.container}>
             <h1>Your order status</h1>
-            <div>cool image</div>
-            <div className={styles.stepsContainer}>
-                <div className={styles.step} data-active>We got your order!</div>
-                <div className={styles.step} data-active>The restaurant has seen your order</div>
-                <div className={styles.step} data-active>Your order is in the making</div>
-                <div className={styles.step}>The order is ready for pick-up</div>
-                <div className={styles.step}>The courier is on the way with your food</div>
-                <div className={styles.step}>Bon appetite!</div>
-            </div>
+            <img src={cover} className={styles.cover} alt="" />
+            <Steps phase={order.phase} />
             <article>
                 <p>Order number: <span>{order.id}</span></p>
                 <p>Ordered from: <span>{order.restaurant}</span></p>
-                <p>Ordered on: <time dateTime={order.timestamp.toString()}>{order.timestamp}</time></p>
+                <p>Ordered on: <time dateTime={order.timestamp.toString()}>{timestampFormater.format(order.timestamp)}</time></p>
             </article>
             <details>
-                <summary>See order details</summary>
+                <summary>Order details</summary>
                 <ul>
                     {order.items.map((item, index) => <li key={index}>{item}</li>)}
                 </ul>
             </details>
         </main>
+    );
+}
+
+type StepsProps = {
+    phase: OrderPhase;
+};
+function Steps({ phase }: StepsProps) {
+    const currentStep = orderPhases.indexOf(phase);
+
+    function isActive(step: OrderPhase) {
+        return orderPhases.indexOf(step) <= currentStep;
+    }
+
+    return (
+        <div className={styles.stepsContainer}>
+            <div className={styles.step} data-active={isActive("received")}>We got your order!</div>
+            <div className={styles.step} data-active={isActive("opened")}>The restaurant has seen your order</div>
+            <div className={styles.step} data-active={isActive("making")}>Your order is in the making</div>
+            <div className={styles.step} data-active={isActive("ready")}>The order is ready for pick-up</div>
+            <div className={styles.step} data-active={isActive("picked-up")}>The courier is on the way with your food</div>
+            <div className={styles.step} data-active={isActive("arrived")}>Bon appetite!</div>
+        </div>
     );
 }

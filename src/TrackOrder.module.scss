@@ -29,7 +29,13 @@
         color: var(--secondary);
     }
 
-    &[data-active]::before {
+    &[data-active="true"]::before {
         content: "◉";
     }
+}
+
+.cover {
+    border-radius: 50%;
+    aspect-ratio: 1;
+    object-fit: cover;
 }
