@@ -5,6 +5,7 @@
     border: 1px solid gray;
     width: 40vw;
     padding-left: 0.5rem;
+    padding-right: 0.5rem;
     margin-left: 0.5rem;
 }
 
@@ -12,5 +13,10 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.75rem;  
-    color: darkgrey;  
+    color: hsl(0, 0%, 35%);  
+}
+
+.id{
+    font-size: 0.75rem;  
+    color: hsl(0, 0%, 35%);  
 }

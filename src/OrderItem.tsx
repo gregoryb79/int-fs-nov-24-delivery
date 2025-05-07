@@ -1,6 +1,7 @@
 import styles from "./OrderItem.module.scss";
 
 type OrderItemProps = {
+    id: string;
     sourceRest: string;    
     sourceAddress: string;
     clientName: string;
@@ -8,9 +9,12 @@ type OrderItemProps = {
     status: "cooking" | "awaiting pick up" | "on the way" | "delivered";
     updatedAt: string;
 };
-export function OrderItem({sourceRest, sourceAddress, clientName, clientAddress, status, updatedAt}: OrderItemProps) {
+export function OrderItem({id, sourceRest, sourceAddress, clientName, clientAddress, status, updatedAt}: OrderItemProps) {
     return(
         <article className={styles.container}>
+            <p className={styles.id}>
+                Order: {id}
+            </p>
             <h4>
                 Ordered from: {sourceRest}
             </h4>
