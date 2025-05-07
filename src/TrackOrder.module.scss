@@ -21,10 +21,24 @@
         position: absolute;
         width: 86%;
         height: 0.2rem;
-        --turning-point: calc(var(--step) * 20%);
+        --meter-value: calc(var(--step) * 20);
+        --turning-point: calc(var(--meter-value) * 1%);
         background: linear-gradient(to right, var(--accent-500) 0 var(--turning-point), var(--accent-100) var(--turning-point) 100%);
         top: 0.4rem;
         left: 7%;
+        animation: fill-meter 600ms linear;
+    }
+}
+
+@property --meter-value {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 0;
+}
+
+@keyframes fill-meter {
+    from {
+        --meter-value: 0;
     }
 }
 
