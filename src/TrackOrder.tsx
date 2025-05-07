@@ -124,7 +124,7 @@ function Steps({ phase }: StepsProps) {
     }
 
     return (
-        <div className={styles.stepsContainer}>
+        <div className={styles.stepsContainer} style={{ "--step": currentStep }}>
             <div className={styles.step} data-active={isActive("received")}>We got your order!</div>
             <div className={styles.step} data-active={isActive("opened")}>The restaurant has seen your order</div>
             <div className={styles.step} data-active={isActive("making")}>Your order is in the making</div>
