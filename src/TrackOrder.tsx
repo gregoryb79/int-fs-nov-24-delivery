@@ -8,7 +8,35 @@ type OrderPhase =
     | "picked-up"
     | "arrived";
 
-export function TrackOrder() {
+type Order = {
+    id: string,
+    phase: OrderPhase,
+    timestamp: number,
+    restaurant: string,
+    items: string[],
+};
+
+type TrackOrderProps = {
+    orderId: string,
+};
+
+function getOrderById(id: string): Order {
+    return {
+        id,
+        phase: "making",
+        timestamp: new Date(2025, 4, 7, 19).valueOf(),
+        restaurant: "A nice place",
+        items: [
+            "Burger",
+            "Fries",
+            "Soda",
+        ],
+    };
+}
+
+export function TrackOrder({ orderId }: TrackOrderProps) {
+    const order = getOrderById(orderId);
+
     return (
         <main className={styles.container}>
             <h1>Your order status</h1>
@@ -22,16 +50,14 @@ export function TrackOrder() {
                 <div className={styles.step}>Bon appetite!</div>
             </div>
             <article>
-                <p>Order number: <span>11111</span></p>
-                <p>Ordered from: <span>A nice place</span></p>
-                <p>Ordered on: <time dateTime="11111">Just now</time></p>
+                <p>Order number: <span>{order.id}</span></p>
+                <p>Ordered from: <span>{order.restaurant}</span></p>
+                <p>Ordered on: <time dateTime={order.timestamp.toString()}>{order.timestamp}</time></p>
             </article>
             <details>
                 <summary>See order details</summary>
                 <ul>
-                    <li>Item #1</li>
-                    <li>Item #2</li>
-                    <li>Item #3</li>
+                    {order.items.map((item, index) => <li key={index}>{item}</li>)}
                 </ul>
             </details>
         </main>
