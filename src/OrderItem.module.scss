@@ -1,0 +1,16 @@
+.container{
+    display: flex;
+    flex-direction: column;
+    gap: 0rem;
+    border: 1px solid gray;
+    width: 40vw;
+    padding-left: 0.5rem;
+    margin-left: 0.5rem;
+}
+
+.status{
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;  
+    color: darkgrey;  
+}
