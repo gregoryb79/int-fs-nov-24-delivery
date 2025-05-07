@@ -1,5 +1,10 @@
+import { useEffect, useState } from "react";
 import styles from "./TrackOrder.module.scss";
 import cover from "./assets/order-status-cover.jpg";
+
+// 1. Show loading even when an order was previously loaded
+// 2. Show error message on rejection
+// 3. Find and fix the bug
 
 const orderPhases = [
     "received",
@@ -24,7 +29,22 @@ type TrackOrderProps = {
     orderId: string,
 };
 
-function getOrderById(id: string): Order {
+async function getOrderById(id: string): Promise<Order> {
+    await new Promise<void>((resolve, reject) => {
+        const delay = (Math.random() * 2000) + 700;
+
+        return setTimeout(
+            () => {
+                if (id === "404") {
+                    reject();
+                } else {
+                    resolve();
+                }
+            },
+            delay
+        );
+    });
+
     return {
         id,
         phase: "making",
@@ -44,7 +64,21 @@ const timestampFormater = new Intl.DateTimeFormat("he", {
 });
 
 export function TrackOrder({ orderId }: TrackOrderProps) {
-    const order = getOrderById(orderId);
+    const [order, setOrder] = useState<Order>();
+
+    useEffect(() => {
+        getOrderById(orderId)
+            .then(setOrder);
+    }, [orderId]);
+
+    if (!order) {
+        return (
+            <main className={styles.container}>
+                <h1>Your order status</h1>
+                <p>Loading...</p>
+            </main>
+        )
+    }
 
     return (
         <main className={styles.container}>
