@@ -23,13 +23,13 @@ export function App() {
   return (
     <>
       <menu>
-        <button disabled={loading} onClick={() => setCurrentOrderId("112335")}>112335</button>
-        <button disabled={loading} onClick={() => setCurrentOrderId("225914")}>225914</button>
-        <button disabled={loading} onClick={() => setCurrentOrderId("658891")}>658891</button>
-        <button disabled={loading} onClick={() => setCurrentOrderId("404")}>404</button>
-        <button disabled={loading} onClick={() => setCurrentPage("TrackOrder")}>Track Order</button>
-        <button disabled={loading} onClick={() => setCurrentPage("HandleOrders")}>HandleOrders</button>
-        <button disabled={loading} onClick={() => setCurrentPage("LogIn")}>Log In</button>
+        <button  onClick={() => setCurrentOrderId("112335")}>112335</button>
+        <button  onClick={() => setCurrentOrderId("225914")}>225914</button>
+        <button  onClick={() => setCurrentOrderId("658891")}>658891</button>
+        <button  onClick={() => setCurrentOrderId("404")}>404</button>
+        <button  onClick={() => setCurrentPage("TrackOrder")}>Track Order</button>
+        <button  onClick={() => setCurrentPage("HandleOrders")}>HandleOrders</button>
+        <button  onClick={() => setCurrentPage("LogIn")}>Log In</button>
       </menu>
       {renderPage()}
     </>

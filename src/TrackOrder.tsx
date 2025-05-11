@@ -23,24 +23,38 @@ export function TrackOrder({ orderId, setLoading }: TrackOrderProps) {
     const [error, setError] = useState<string>();    
 
     useEffect(() => {
-        async function fetchOrder() {
+        
+        let isCanceled = false;
+
+        async function fetchOrder() { 
+           
             setOrder(undefined);
             setError(undefined);
             setLoading(true);
             try {
                 const fetchedOrder = await getOrderById(orderId);
-                setOrder(fetchedOrder);
-            } catch (error) {
-                if (error === "404") {
-                    setError(`Order ${orderId} was not found.`);
-                } else if (error === "User not logged in") {
-                    setError("User not logged in. Please log in to handle orders.");
+                                                 
+                if (!isCanceled) {
+                    setOrder(fetchedOrder);
                 }
+                              
+            } catch (error) {
+                if (!isCanceled) {
+                    if (error === "404") {
+                        setError(`Order ${orderId} was not found.`);
+                    } else if (error === "User not logged in") {
+                        setError("User not logged in. Please log in to handle orders.");
+                    }   
+                }          
             } finally {                
                 setLoading(false);
             }
         }
         fetchOrder();
+
+        return () => {
+            isCanceled = true;
+        };
     }, [orderId]);
 
     if (error) {

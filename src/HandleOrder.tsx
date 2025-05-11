@@ -5,10 +5,6 @@ import { getOrderById, setOrderById, orderPhases  } from "../src/services/orderS
 import type {Order, OrderPhase}  from "../src/services/orderService";
 import { Spinner } from "./Spinner";
 
-// 1. Show loading even when an order was previously loaded
-// 2. Show error message on rejection
-// 3. Find and fix the bug
-
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
     dateStyle: "short",
@@ -25,24 +21,38 @@ export function HandleOrder({ orderId, setLoading, loading }: HandleOrderProps) 
     
 
     useEffect(() => {
-        async function fetchOrder() {
+        
+        let isCanceled = false;
+
+        async function fetchOrder() { 
+           
             setOrder(undefined);
             setError(undefined);
             setLoading(true);
             try {
                 const fetchedOrder = await getOrderById(orderId);
-                setOrder(fetchedOrder);
-            } catch (error) {
-                if (error === "404") {
-                    setError(`Order ${orderId} was not found.`);
-                } else if (error === "User not logged in") {
-                    setError("User not logged in. Please log in to handle orders.");
+                                                 
+                if (!isCanceled) {
+                    setOrder(fetchedOrder);
                 }
+                              
+            } catch (error) {
+                if (!isCanceled) {
+                    if (error === "404") {
+                        setError(`Order ${orderId} was not found.`);
+                    } else if (error === "User not logged in") {
+                        setError("User not logged in. Please log in to handle orders.");
+                    }   
+                }          
             } finally {                
                 setLoading(false);
             }
         }
         fetchOrder();
+
+        return () => {
+            isCanceled = true;
+        };
     }, [orderId]);
 
     if (error) {
