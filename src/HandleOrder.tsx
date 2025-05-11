@@ -1,84 +1,47 @@
 import { useEffect, useState } from "react";
 import styles from "./HandleOrder.module.scss";
 import cover from "./assets/order-status-cover.jpg";
+import { getOrderById, setOrderById, orderPhases  } from "../src/services/orderService";
+import type {Order, OrderPhase}  from "../src/services/orderService";
+import { Spinner } from "./Spinner";
 
 // 1. Show loading even when an order was previously loaded
 // 2. Show error message on rejection
 // 3. Find and fix the bug
-
-const orderPhases = [
-    "received",
-    "opened",
-    "making",
-    "ready",
-    "picked-up",
-    "arrived",
-] as const;
-
-type OrderPhase = typeof orderPhases[number];
-
-type Order = {
-    id: string,
-    phase: OrderPhase,
-    timestamp: number,
-    restaurant: string,
-    items: string[],
-};
-
-type TrackOrderProps = {
-    orderId: string,
-};
-
-async function getOrderById(id: string): Promise<Order> {
-    await new Promise<void>((resolve, reject) => {
-        const delay = (Math.random() * 2000) + 700;
-
-        return setTimeout(
-            () => {
-                if (id === "404") {
-                    reject();
-                } else {
-                    resolve();
-                }
-            },
-            delay
-        );
-    });
-
-    return {
-        id,
-        phase: "making",
-        timestamp: new Date(2025, 4, 7, 19).valueOf(),
-        restaurant: "A nice place",
-        items: [
-            "Burger",
-            "Fries",
-            "Soda",
-        ],
-    };
-}
 
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
     dateStyle: "short",
 });
 
-export function HandleOrder({ orderId }: TrackOrderProps) {
+type HandleOrderProps = {
+    orderId: string,
+    setLoading: (loading: boolean) => void;
+    loading: boolean;
+};
+export function HandleOrder({ orderId, setLoading, loading }: HandleOrderProps) {
     const [order, setOrder] = useState<Order>();
     const [error, setError] = useState<string>();
+    
 
     useEffect(() => {
         async function fetchOrder() {
             setOrder(undefined);
             setError(undefined);
-            try{
+            setLoading(true);
+            try {
                 const fetchedOrder = await getOrderById(orderId);
                 setOrder(fetchedOrder);
-            }catch (error) {
-                setError(`Order ${orderId} was not found.`);
+            } catch (error) {
+                if (error === "404") {
+                    setError(`Order ${orderId} was not found.`);
+                } else if (error === "User not logged in") {
+                    setError("User not logged in. Please log in to handle orders.");
+                }
+            } finally {                
+                setLoading(false);
             }
-            
-        }        
+        }
         fetchOrder();
     }, [orderId]);
 
@@ -95,24 +58,43 @@ export function HandleOrder({ orderId }: TrackOrderProps) {
         return (
             <main className={styles.container}>
                 <h1>Handle order:</h1>
+                <Spinner/>
                 <p>Loading...</p>
             </main>
-        )
+        );
     }
 
     function updatePhase(updatedPhase: number) {
-        if (!order) {return;}
+        if (!order) return;
+
         console.log("updatedPhase", updatedPhase);
-        
+
         const updatedOrder = { ...order, phase: orderPhases[updatedPhase] };
         setOrder(updatedOrder);
-    }    
+        
+        setLoading(true);
+
+        async function setOrderPhase() {
+            try {
+                await setOrderById(orderId, updatedPhase);
+            } catch (error) {
+                if (error === "404") {
+                    setError(`Order ${orderId} was not found.`);
+                }
+            } finally {                
+                setLoading(false);
+            }
+        }
+
+        setOrderPhase();
+    }
 
     return (
         <main className={styles.container}>
             <h1>Handle order:</h1>
             <img src={cover} className={styles.cover} alt="" />
-            <Steps phase={order.phase} updatePhase = {updatePhase}/>
+            {loading && <Spinner/>} 
+            <Steps phase={order.phase} updatePhase={updatePhase} loading={loading} />
             <article>
                 <p>Order number: <span>{order.id}</span></p>
                 <p>Ordered from: <span>{order.restaurant}</span></p>
@@ -128,11 +110,14 @@ export function HandleOrder({ orderId }: TrackOrderProps) {
     );
 }
 
+
+
 type StepsProps = {
     phase: OrderPhase;
     updatePhase: (updatedPhase: number) => void;
+    loading: boolean;
 };
-function Steps({ phase, updatePhase}: StepsProps) {
+function Steps({ phase, updatePhase, loading}: StepsProps) {
     const currentStep = orderPhases.indexOf(phase);
 
     function isActive(step: OrderPhase) {
@@ -142,22 +127,22 @@ function Steps({ phase, updatePhase}: StepsProps) {
     return (
         <div className={styles.stepsContainer} style={{ "--step": currentStep }}>              
             <div className={styles.step} data-active={isActive("received")}>
-                <button onClick={() => updatePhase(0)}>We got your order!</button>
+                <button disabled={loading} onClick={() => updatePhase(0)}>We got your order!</button>
             </div>
             <div className={styles.step} data-active={isActive("opened")}>
-                <button onClick={() => updatePhase(1)}>The restaurant has seen your order</button>
+                <button disabled={loading} onClick={() => updatePhase(1)}>The restaurant has seen your order</button>
             </div>
             <div className={styles.step} data-active={isActive("making")}>
-                <button onClick={() => updatePhase(2)}>Your order is in the making</button>
+                <button disabled={loading} onClick={() => updatePhase(2)}>Your order is in the making</button>
             </div>
             <div className={styles.step} data-active={isActive("ready")}>
-                <button onClick={() => updatePhase(3)}>The order is ready for pick-up</button> 
+                <button disabled={loading} onClick={() => updatePhase(3)}>The order is ready for pick-up</button> 
             </div>
             <div className={styles.step} data-active={isActive("picked-up")}>
-                <button onClick={() => updatePhase(4)}>The courier is on the way with your food</button>
+                <button disabled={loading} onClick={() => updatePhase(4)}>The courier is on the way with your food</button>
             </div>
             <div className={styles.step} data-active={isActive("arrived")}>
-                <button onClick={() => updatePhase(5)}>Bon appetite!</button>
+                <button disabled={loading} onClick={() => updatePhase(5)}>Bon appetite!</button>
             </div>
         </div>
     );
