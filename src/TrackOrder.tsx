@@ -31,7 +31,7 @@ type TrackOrderProps = {
 
 async function getOrderById(id: string): Promise<Order> {
     await new Promise<void>((resolve, reject) => {
-        const delay = (Math.random() * 2000) + 700;
+        const delay = id === "112335" ? 500 : (Math.random() * 2000) + 700;
 
         return setTimeout(
             () => {
@@ -68,11 +68,29 @@ export function TrackOrder({ orderId }: TrackOrderProps) {
     const [error, setError] = useState<string>();
 
     useEffect(() => {
+        let isCanceled = false;
+
         setOrder(undefined);
         setError(undefined);
         getOrderById(orderId)
-            .then(setOrder)
-            .catch(() => setError(`Order ${orderId} was not found.`));
+            .then((order) => {
+                if (isCanceled) {
+                    return;
+                }
+
+                setOrder(order);
+            })
+            .catch(() => {
+                if (isCanceled) {
+                    return;
+                }
+
+                setError(`Order ${orderId} was not found.`);
+            });
+
+        return () => {
+            isCanceled = true;
+        };
     }, [orderId]);
 
     if (error) {
