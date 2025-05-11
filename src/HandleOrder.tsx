@@ -68,11 +68,18 @@ export function HandleOrder({ orderId }: TrackOrderProps) {
     const [error, setError] = useState<string>();
 
     useEffect(() => {
-        setOrder(undefined);
-        setError(undefined);
-        getOrderById(orderId)
-            .then(setOrder)
-            .catch(() => setError(`Order ${orderId} was not found.`));
+        async function fetchOrder() {
+            setOrder(undefined);
+            setError(undefined);
+            try{
+                const fetchedOrder = await getOrderById(orderId);
+                setOrder(fetchedOrder);
+            }catch (error) {
+                setError(`Order ${orderId} was not found.`);
+            }
+            
+        }        
+        fetchOrder();
     }, [orderId]);
 
     if (error) {
@@ -95,7 +102,8 @@ export function HandleOrder({ orderId }: TrackOrderProps) {
 
     function updatePhase(updatedPhase: number) {
         if (!order) {return;}
-        console.log("updatedPhase", updatedPhase);        
+        console.log("updatedPhase", updatedPhase);
+        
         const updatedOrder = { ...order, phase: orderPhases[updatedPhase] };
         setOrder(updatedOrder);
     }    
