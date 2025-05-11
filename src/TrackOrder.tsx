@@ -65,11 +65,24 @@ const timestampFormater = new Intl.DateTimeFormat("he", {
 
 export function TrackOrder({ orderId }: TrackOrderProps) {
     const [order, setOrder] = useState<Order>();
+    const [error, setError] = useState<string>();
 
     useEffect(() => {
+        setOrder(undefined);
+        setError(undefined);
         getOrderById(orderId)
-            .then(setOrder);
+            .then(setOrder)
+            .catch(() => setError(`Order ${orderId} was not found.`));
     }, [orderId]);
+
+    if (error) {
+        return (
+            <main className={styles.container}>
+                <h1>Your order status</h1>
+                <p>{error}</p>
+            </main>
+        );
+    }
 
     if (!order) {
         return (
@@ -111,7 +124,7 @@ function Steps({ phase }: StepsProps) {
     }
 
     return (
-        <div className={styles.stepsContainer}>
+        <div className={styles.stepsContainer} style={{ "--step": currentStep }}>
             <div className={styles.step} data-active={isActive("received")}>We got your order!</div>
             <div className={styles.step} data-active={isActive("opened")}>The restaurant has seen your order</div>
             <div className={styles.step} data-active={isActive("making")}>Your order is in the making</div>

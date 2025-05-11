@@ -1,7 +1,7 @@
 .container {
     width: min(60ch, 100% - 2rem);
     margin-inline: auto;
-    background: var(--primary);
+    background: var(--primary-500);
     padding: 1rem;
     margin-block-start: 2rem;
     border-radius: 8px;
@@ -14,6 +14,32 @@
 .stepsContainer {
     display: flex;
     gap: 1rem;
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        width: 86%;
+        height: 0.2rem;
+        --meter-value: calc(var(--step) * 20);
+        --turning-point: calc(var(--meter-value) * 1%);
+        background: linear-gradient(to right, var(--accent-500) 0 var(--turning-point), var(--accent-100) var(--turning-point) 100%);
+        top: 0.4rem;
+        left: 7%;
+        animation: fill-meter 600ms linear;
+    }
+}
+
+@property --meter-value {
+    syntax: "<number>";
+    inherits: false;
+    initial-value: 0;
+}
+
+@keyframes fill-meter {
+    from {
+        --meter-value: 0;
+    }
 }
 
 .step {
@@ -25,12 +51,17 @@
     align-items: center;
 
     &::before {
-        content: "○";
-        color: var(--secondary);
+        content: "";
+        width: 1rem;
+        aspect-ratio: 1;
+        background: var(--accent-100);
+        border: 2px solid var(--accent-500);
+        border-radius: 50%;
+        position: relative;
     }
 
     &[data-active="true"]::before {
-        content: "◉";
+        background: var(--accent-500);
     }
 }
 
