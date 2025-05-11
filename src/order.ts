@@ -17,6 +17,10 @@ export type Order = {
     items: string[],
 };
 
+export async function listOrders() {
+    return [];
+}
+
 export async function getOrderById(id: string): Promise<Order> {
     await new Promise<void>((resolve, reject) => {
         const delay = id === "112335" ? 500 : (Math.random() * 2000) + 700;

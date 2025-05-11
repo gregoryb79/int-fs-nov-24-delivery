@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { TrackOrder } from "./TrackOrder";
 
+// 1. Create order history page (can still use mock data, but use async function)
+// 2. New order page (using a form)
+//    * start with hardcoded items in the order page
+//    * get items from "server"
+// 3. Tie it all together (save orders in local storage)
+// 4. Update order details and history to show items' price and total cost etc...
+
 export function App() {
   const [currentOrderId, setCurrentOrderId] = useState("112335");
 
