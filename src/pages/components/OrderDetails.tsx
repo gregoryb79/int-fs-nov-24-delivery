@@ -10,7 +10,7 @@ export function OrderDetails({ order }: OrderDetailsProps) {
             <ul>
                 {order.items.map((item, index) => (
                     <li key={index}>
-                        {item.name}: {item.quantity} × ${item.price.toFixed(2) } = ${item.quantity * item.price}
+                        {item.name}: {item.quantity} × ${item.price.toFixed(2) } = ${(item.quantity * item.price).toFixed(2)}
                     </li>
                 ))}
             </ul>

@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { getOrders, type Order } from "../services/orderService";
 import { Spinner } from "./components/Spinner";
 import styles from "./OrdersHistory.module.scss";
 import type { Pages } from "../App";
+import { useOrders } from "../hooks/useOrders";
 
 type OrdersHistoryProps = {
   setCurrentPage: (page: keyof Pages) => void;
@@ -10,34 +9,8 @@ type OrdersHistoryProps = {
 };
 
 export function OrdersHistory({ setCurrentPage, setCurrentOrderId }: OrdersHistoryProps) {
-  const [orders, setOrders] = useState<Order[]>();
-  const [error, setError] = useState<string>();
 
-  useEffect(() => {
-    let isCanceled = false;
-
-    async function fetchOrders() {
-      setOrders(undefined);
-      setError(undefined);
-
-      try {
-        const fetchedOrders = await getOrders();
-
-        if (!isCanceled) {
-          setOrders(fetchedOrders);
-        }
-      } catch (error) {
-        if (error === "User not logged in") {
-          setError("User not logged in. Please log in to handle orders.");
-        }
-      }
-    }
-    fetchOrders();
-
-    return () => {
-      isCanceled = true;
-    };
-  }, []);
+  const {orders, error} = useOrders(); 
 
   if (error) {
     return (

@@ -3,6 +3,7 @@ import { TrackOrder } from "./pages/TrackOrder";
 import { HandleOrder } from "./pages/HandleOrder";
 import { LogIn } from "./pages/LogIn";
 import { OrdersHistory } from "./pages/OrdersHistory";
+import { NewOrder } from "./pages/NewOrder";
 
 // 1. Create order history page (can still use mock data, but use async function)
 // 2. New order page (using a form)
@@ -18,6 +19,7 @@ export type Pages = {
   HandleOrders: ReactNode;
   LogIn: ReactNode;
   OrdersHistory: ReactNode;
+  NewOrder: ReactNode;
 };
 
 export function App() {
@@ -31,6 +33,7 @@ export function App() {
     OrdersHistory: (
       <OrdersHistory setCurrentPage={setCurrentPage} setCurrentOrderId={setCurrentOrderId}/>
     ),
+    NewOrder: <NewOrder setCurrentPage={setCurrentPage} setCurrentOrderId={setCurrentOrderId}/>,
   };
 
   return (
@@ -40,6 +43,7 @@ export function App() {
         <button onClick={() => setCurrentPage("HandleOrders")}>HandleOrders</button>
         <button onClick={() => setCurrentPage("LogIn")}>Log In</button>
         <button onClick={() => setCurrentPage("OrdersHistory")}>Orders History</button>
+        <button onClick={() => setCurrentPage("NewOrder")}>New Order</button>
       </menu>
       {pages[currPage] || <p>Ooops, something went wrong...</p>}
     </>

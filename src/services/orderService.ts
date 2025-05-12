@@ -1,3 +1,5 @@
+import type { MenuItem } from "./menuService";
+
 export const orderPhases = [
     "received",
     "opened",
@@ -83,6 +85,32 @@ export async function setOrderById(id: string, phase : number): Promise<void> {
    
 }
 
+export async function addOrder(newOrder: Order): Promise<void> {
+    const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
+    console.log("orders before adding new order:", orders);
+
+    await new Promise<void>((resolve, reject) => {
+        const delay = (Math.random() * 2000) + 700;       
+
+        return setTimeout(() => {
+            const userId = localStorage.getItem("userId");
+            if (!orders) {
+                reject("404");
+            } else if (!userId) {
+                reject("User not logged in");
+            } else if (orders.find((order: Order) => order.id === newOrder.id)) {
+                reject("Order already exists");            
+            } else {
+                resolve();
+            }
+        }, delay);
+    });
+
+    orders.push(newOrder);
+    console.log("orders after add", orders);        
+    localStorage.setItem("orders", JSON.stringify(orders));
+}
+
 export async function getOrders(): Promise<Order[]> {
 
     const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");    
@@ -159,3 +187,47 @@ if (orders.length === 0) {
     generateOrders();
 }
 
+export function createLocalOrder() : Order{    
+    const newOrder: Order = {
+        id: Date.now().toString(),
+        phase: "received",
+        timestamp: Date.now(),
+        restaurant: "Nice Restaurant",
+        items: [],
+    };
+    localStorage.setItem(newOrder.id, JSON.stringify(newOrder));
+    return newOrder;    
+}
+
+export function updateItemAtLocalOrder(orderId: string, item: MenuItem, change: number) : Order{
+    const localOrder = JSON.parse(localStorage.getItem(orderId) ?? "[]");
+    console.log("localOrder items at start", localOrder.items);
+    console.log("item to add", item);
+
+    if (!localOrder) {
+        throw new Error("Order not found");
+    }
+    const existingItem = localOrder.items.find((i: OrderItem) => i.name === item.name);
+    if (existingItem) {
+        existingItem.quantity += change;
+        if (existingItem.quantity <= 0) {
+            localOrder.items = localOrder.items.filter((i: OrderItem) => i.name !== item.name);
+        }
+    }
+    else if (change > 0) {
+        console.log("adding new item", item);
+        const newItem: OrderItem = {
+            name: item.name,
+            quantity: 1,
+            price: item.price,
+        };        
+        localOrder.items.push(newItem);
+    }    
+    console.log("localOrder items at end", localOrder.items);    
+    localStorage.setItem(orderId, JSON.stringify(localOrder));   
+    return localOrder;
+}
+
+export function clearLocalOrder(orderId: string) {
+    localStorage.removeItem(orderId);
+}
