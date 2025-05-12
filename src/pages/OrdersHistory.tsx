@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getOrders, type Order } from "./services/orderService";
-import { Spinner } from "./Spinner";
+import { getOrders, type Order } from "../services/orderService";
+import { Spinner } from "./components/Spinner";
 import styles from "./OrdersHistory.module.scss";
-import type { Pages } from "./App";
+import type { Pages } from "../App";
 
 type OrdersHistoryProps = {
   setCurrentPage: (page: keyof Pages) => void;

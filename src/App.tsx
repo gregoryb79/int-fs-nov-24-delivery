@@ -1,8 +1,8 @@
 import { useState, type ReactNode } from "react";
-import { TrackOrder } from "./TrackOrder";
-import { HandleOrder } from "./HandleOrder";
-import { LogIn } from "./LogIn";
-import { OrdersHistory } from "./OrdersHistory";
+import { TrackOrder } from "./pages/TrackOrder";
+import { HandleOrder } from "./pages/HandleOrder";
+import { LogIn } from "./pages/LogIn";
+import { OrdersHistory } from "./pages/OrdersHistory";
 
 // 1. Create order history page (can still use mock data, but use async function)
 // 2. New order page (using a form)
@@ -10,6 +10,8 @@ import { OrdersHistory } from "./OrdersHistory";
 //    * get items from "server"
 // 3. Tie it all together (save orders in local storage)
 // 4. Update order details and history to show items' price and total cost etc...
+// 5. Implement generic useAsync hook
+// 6. Solve prop-drilling and synced states problem??
 
 export type Pages = {
   TrackOrder: ReactNode;

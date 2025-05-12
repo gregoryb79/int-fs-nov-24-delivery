@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import styles from "./HandleOrder.module.scss";
-import cover from "./assets/order-status-cover.jpg";
-import { getOrderById, setOrderById, orderPhases  } from "../src/services/orderService";
-import type {Order, OrderPhase}  from "../src/services/orderService";
-import { Spinner } from "./Spinner";
+import cover from "../assets/order-status-cover.jpg";
+import { getOrderById, setOrderById, orderPhases  } from "../services/orderService";
+import type {Order, OrderPhase}  from "../services/orderService";
+import { Spinner } from "./components/Spinner";
 
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
