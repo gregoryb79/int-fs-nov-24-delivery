@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
 import styles from "./TrackOrder.module.scss";
 import cover from "../assets/order-status-cover.jpg";
-import { getOrderById, orderPhases  } from "../services/orderService";
-import type {Order, OrderPhase, OrderItem}  from "../services/orderService";
+import { orderPhases  } from "../services/orderService";
+import type { OrderPhase}  from "../services/orderService";
 import { Spinner } from "./components/Spinner";
 import { OrderDetails } from "./components/OrderDetails";
+import { useOrder } from "../hooks/useOrder";
 
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
@@ -15,40 +15,41 @@ type TrackOrderProps = {
     orderId: string,
 };
 export function TrackOrder({ orderId }: TrackOrderProps) {
-    const [order, setOrder] = useState<Order>();
-    const [error, setError] = useState<string>();        
+    // const [order, setOrder] = useState<Order>();
+    // const [error, setError] = useState<string>();        
+    const {order, error} = useOrder(orderId);
 
-    useEffect(() => {
+    // useEffect(() => {
         
-        let isCanceled = false;
+    //     let isCanceled = false;
 
-        async function fetchOrder() { 
+    //     async function fetchOrder() { 
            
-            setOrder(undefined);
-            setError(undefined);            
-            try {
-                const fetchedOrder = await getOrderById(orderId);
+    //         setOrder(undefined);
+    //         setError(undefined);            
+    //         try {
+    //             const fetchedOrder = await getOrderById(orderId);
                                                  
-                if (!isCanceled) {
-                    setOrder(fetchedOrder);
-                }
+    //             if (!isCanceled) {
+    //                 setOrder(fetchedOrder);
+    //             }
                               
-            } catch (error) {
-                if (!isCanceled) {
-                    if (error === "404") {
-                        setError(`Order ${orderId} was not found.`);
-                    } else if (error === "User not logged in") {
-                        setError("User not logged in. Please log in to handle orders.");
-                    }   
-                }          
-            } 
-        }
-        fetchOrder();
+    //         } catch (error) {
+    //             if (!isCanceled) {
+    //                 if (error === "404") {
+    //                     setError(`Order ${orderId} was not found.`);
+    //                 } else if (error === "User not logged in") {
+    //                     setError("User not logged in. Please log in to handle orders.");
+    //                 }   
+    //             }          
+    //         } 
+    //     }
+    //     fetchOrder();
 
-        return () => {
-            isCanceled = true;
-        };
-    }, [orderId]);
+    //     return () => {
+    //         isCanceled = true;
+    //     };
+    // }, [orderId]);
 
     if (error) {
         return (

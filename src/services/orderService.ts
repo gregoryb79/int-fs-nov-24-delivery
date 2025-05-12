@@ -23,6 +23,8 @@ export type Order = {
     items: OrderItem[]; 
 };
 
+
+
 export async function getOrderById(id: string): Promise<Order> {
     const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
     const order = orders.find((order: Order) => order.id === id);
@@ -150,7 +152,10 @@ function generateOrders() {
     localStorage.setItem("orders", JSON.stringify(orders));
 }
 
+
+
 const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
 if (orders.length === 0) {
     generateOrders();
 }
+

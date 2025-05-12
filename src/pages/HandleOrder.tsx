@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
 import styles from "./HandleOrder.module.scss";
 import cover from "../assets/order-status-cover.jpg";
-import { getOrderById, setOrderById, orderPhases  } from "../services/orderService";
-import type {Order, OrderPhase, OrderItem}  from "../services/orderService";
+import {  orderPhases  } from "../services/orderService";
+import type { OrderPhase}  from "../services/orderService";
 import { Spinner } from "./components/Spinner";
 import { OrderDetails } from "./components/OrderDetails";
+import { useOrder } from "../hooks/useOrder";
 
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
@@ -15,45 +15,8 @@ type HandleOrderProps = {
     orderId: string,    
 };
 export function HandleOrder({ orderId}: HandleOrderProps) {
-    const [order, setOrder] = useState<Order>();
-    const [error, setError] = useState<string>();
-    const [loading, setLoading] = useState(false);
     
-
-    useEffect(() => {
-        
-        let isCanceled = false;
-
-        async function fetchOrder() { 
-           
-            setOrder(undefined);
-            setError(undefined);
-            setLoading(true);
-            try {
-                const fetchedOrder = await getOrderById(orderId);
-                                                 
-                if (!isCanceled) {
-                    setOrder(fetchedOrder);
-                }
-                              
-            } catch (error) {
-                if (!isCanceled) {
-                    if (error === "404") {
-                        setError(`Order ${orderId} was not found.`);
-                    } else if (error === "User not logged in") {
-                        setError("User not logged in. Please log in to handle orders.");
-                    }   
-                }          
-            } finally {                
-                setLoading(false);
-            }
-        }
-        fetchOrder();
-
-        return () => {
-            isCanceled = true;
-        };
-    }, [orderId]);
+    const { order, error, loading, updatePhase } = useOrder(orderId); 
 
     if (error) {
         return (
@@ -72,32 +35,7 @@ export function HandleOrder({ orderId}: HandleOrderProps) {
                 <p>Loading...</p>
             </main>
         );
-    }
-
-    function updatePhase(updatedPhase: number) {
-        if (!order) return;
-
-        console.log("updatedPhase", updatedPhase);
-
-        const updatedOrder = { ...order, phase: orderPhases[updatedPhase] };
-        setOrder(updatedOrder);
-        
-        setLoading(true);
-
-        async function setOrderPhase() {
-            try {
-                await setOrderById(orderId, updatedPhase);
-            } catch (error) {
-                if (error === "404") {
-                    setError(`Order ${orderId} was not found.`);
-                }
-            } finally {                
-                setLoading(false);
-            }
-        }
-
-        setOrderPhase();
-    }
+    }   
 
     return (
         <main className={styles.container}>
