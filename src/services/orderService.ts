@@ -9,12 +9,18 @@ export const orderPhases = [
 
 export type OrderPhase = typeof orderPhases[number];
 
+export type OrderItem = {
+    name: string; 
+    quantity: number;
+    price: number;
+};
+
 export type Order = {
-    id: string;
-    phase: OrderPhase;
-    timestamp: number;
-    restaurant: string;
-    items: string[];
+    id: string; 
+    phase: OrderPhase; 
+    timestamp: number; 
+    restaurant: string; 
+    items: OrderItem[]; 
 };
 
 export async function getOrderById(id: string): Promise<Order> {
@@ -98,35 +104,47 @@ export async function getOrders(): Promise<Order[]> {
     return orders;
 }
 
-function generateOrders(){
+function generateOrders() {
     const orders = [
         {
             id: "112335",
             phase: "received",
             timestamp: Date.now(),
             restaurant: "McDonald's",
-            items: ["Big Mac", "Fries"],
+            items: [
+                { name: "Big Mac", quantity: 2, price: 5.99 },
+                { name: "Fries", quantity: 1, price: 2.99 },
+            ],
         },
         {
             id: "225914",
             phase: "opened",
             timestamp: Date.now(),
             restaurant: "Burger King",
-            items: ["Whopper", "Onion Rings"],
+            items: [
+                { name: "Whopper", quantity: 1, price: 6.99 },
+                { name: "Onion Rings", quantity: 2, price: 3.49 },
+            ],
         },
         {
             id: "658891",
             phase: "making",
             timestamp: Date.now(),
             restaurant: "KFC",
-            items: ["Chicken Bucket", "Coleslaw"],
+            items: [
+                { name: "Chicken Bucket", quantity: 1, price: 12.99 },
+                { name: "Coleslaw", quantity: 3, price: 1.99 },
+            ],
         },
         {
             id: "650091",
             phase: "picked-up",
             timestamp: Date.now(),
             restaurant: "Pizza Hut",
-            items: ["Pepperoni Pizza", "Garlic Bread"],
+            items: [
+                { name: "Pepperoni Pizza", quantity: 1, price: 14.99 },
+                { name: "Garlic Bread", quantity: 2, price: 4.99 },
+            ],
         },
     ];
     localStorage.setItem("orders", JSON.stringify(orders));

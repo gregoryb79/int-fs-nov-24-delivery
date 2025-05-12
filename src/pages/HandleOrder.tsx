@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import styles from "./HandleOrder.module.scss";
 import cover from "../assets/order-status-cover.jpg";
 import { getOrderById, setOrderById, orderPhases  } from "../services/orderService";
-import type {Order, OrderPhase}  from "../services/orderService";
+import type {Order, OrderPhase, OrderItem}  from "../services/orderService";
 import { Spinner } from "./components/Spinner";
+import { OrderDetails } from "./components/OrderDetails";
 
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
@@ -109,12 +110,7 @@ export function HandleOrder({ orderId}: HandleOrderProps) {
                 <p>Ordered from: <span>{order.restaurant}</span></p>
                 <p>Ordered on: <time dateTime={order.timestamp.toString()}>{timestampFormater.format(order.timestamp)}</time></p>
             </article>
-            <details>
-                <summary>Order details</summary>
-                <ul>
-                    {order.items.map((item, index) => <li key={index}>{item}</li>)}
-                </ul>
-            </details>
+            <OrderDetails order={order}/>
         </main>
     );
 }
