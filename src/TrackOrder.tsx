@@ -5,10 +5,6 @@ import { getOrderById, orderPhases  } from "../src/services/orderService";
 import type {Order, OrderPhase}  from "../src/services/orderService";
 import { Spinner } from "./Spinner";
 
-// 1. Show loading even when an order was previously loaded
-// 2. Show error message on rejection
-// 3. Find and fix the bug
-
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
     dateStyle: "short",
@@ -16,11 +12,10 @@ const timestampFormater = new Intl.DateTimeFormat("he", {
 
 type TrackOrderProps = {
     orderId: string,
-    setLoading: (loading: boolean) => void;
 };
-export function TrackOrder({ orderId, setLoading }: TrackOrderProps) {
+export function TrackOrder({ orderId }: TrackOrderProps) {
     const [order, setOrder] = useState<Order>();
-    const [error, setError] = useState<string>();    
+    const [error, setError] = useState<string>();        
 
     useEffect(() => {
         
@@ -29,8 +24,7 @@ export function TrackOrder({ orderId, setLoading }: TrackOrderProps) {
         async function fetchOrder() { 
            
             setOrder(undefined);
-            setError(undefined);
-            setLoading(true);
+            setError(undefined);            
             try {
                 const fetchedOrder = await getOrderById(orderId);
                                                  
@@ -46,9 +40,7 @@ export function TrackOrder({ orderId, setLoading }: TrackOrderProps) {
                         setError("User not logged in. Please log in to handle orders.");
                     }   
                 }          
-            } finally {                
-                setLoading(false);
-            }
+            } 
         }
         fetchOrder();
 

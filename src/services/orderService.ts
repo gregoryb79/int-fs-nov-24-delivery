@@ -18,14 +18,15 @@ export type Order = {
 };
 
 export async function getOrderById(id: string): Promise<Order> {
-    const order = localStorage.getItem(id);
+    const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
+    const order = orders.find((order: Order) => order.id === id);
 
     await new Promise<void>((resolve, reject) => {
         const delay = (Math.random() * 2000) + 700;
 
         return setTimeout(() => {
             const userId = localStorage.getItem("userId");
-            if (id === "404" || !order) {
+            if (!order) {
                 reject("404");
             } else if (!userId) {
                 reject("User not logged in");
@@ -38,16 +39,22 @@ export async function getOrderById(id: string): Promise<Order> {
     if (!order) {
         throw new Error("404");
     }
-    return JSON.parse(order) as Order;
+    return order as Order;
 }
 
 export async function setOrderById(id: string, phase : number): Promise<void> {
+    const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
+    console.log("id", id);
+    console.log("orders before update", orders);
+    const order = orders.find((order: Order) => order.id === id);
+    console.log("order before update", order.id);
+
     await new Promise<void>((resolve, reject) => {
-        const delay = (Math.random() * 2000) + 700;
+        const delay = (Math.random() * 2000) + 700;       
 
         return setTimeout(() => {
             const userId = localStorage.getItem("userId");
-            if (id === "404") {
+            if (!orders) {
                 reject("404");
             } else if (!userId) {
                 reject("User not logged in");
@@ -57,10 +64,75 @@ export async function setOrderById(id: string, phase : number): Promise<void> {
         }, delay);
     });
 
-    const order = await getOrderById(id);
-    order.phase = orderPhases[phase];
-    console.log("order", order);
+    if (!order) {
+        console.log("order not found", id);
+        throw new Error("404");
+    }   
 
-    localStorage.setItem(id, JSON.stringify(order));
+    order.phase = orderPhases[phase];
+    console.log("orders after update", orders);        
+    localStorage.setItem("orders", JSON.stringify(orders));
    
+}
+
+export async function getOrders(): Promise<Order[]> {
+
+    const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");    
+
+    await new Promise<void>((resolve, reject) => {
+        const delay = (Math.random() * 2000) + 700;
+
+        return setTimeout(() => {
+            const userId = localStorage.getItem("userId");
+            if (!userId) {
+                reject("User not logged in");
+            } else {
+                resolve();
+            }
+        }, delay);
+    });    
+    
+    if (!orders) {
+        throw new Error("404");
+    }
+    return orders;
+}
+
+function generateOrders(){
+    const orders = [
+        {
+            id: "112335",
+            phase: "received",
+            timestamp: Date.now(),
+            restaurant: "McDonald's",
+            items: ["Big Mac", "Fries"],
+        },
+        {
+            id: "225914",
+            phase: "opened",
+            timestamp: Date.now(),
+            restaurant: "Burger King",
+            items: ["Whopper", "Onion Rings"],
+        },
+        {
+            id: "658891",
+            phase: "making",
+            timestamp: Date.now(),
+            restaurant: "KFC",
+            items: ["Chicken Bucket", "Coleslaw"],
+        },
+        {
+            id: "650091",
+            phase: "picked-up",
+            timestamp: Date.now(),
+            restaurant: "Pizza Hut",
+            items: ["Pepperoni Pizza", "Garlic Bread"],
+        },
+    ];
+    localStorage.setItem("orders", JSON.stringify(orders));
+}
+
+const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
+if (orders.length === 0) {
+    generateOrders();
 }

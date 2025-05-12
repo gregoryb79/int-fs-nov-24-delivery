@@ -11,13 +11,12 @@ const timestampFormater = new Intl.DateTimeFormat("he", {
 });
 
 type HandleOrderProps = {
-    orderId: string,
-    setLoading: (loading: boolean) => void;
-    loading: boolean;
+    orderId: string,    
 };
-export function HandleOrder({ orderId, setLoading, loading }: HandleOrderProps) {
+export function HandleOrder({ orderId}: HandleOrderProps) {
     const [order, setOrder] = useState<Order>();
     const [error, setError] = useState<string>();
+    const [loading, setLoading] = useState(false);
     
 
     useEffect(() => {
