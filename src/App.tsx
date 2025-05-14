@@ -4,6 +4,7 @@ import { HandleOrder } from "./pages/HandleOrder";
 import { LogIn } from "./pages/LogIn";
 import { OrdersHistory } from "./pages/OrdersHistory";
 import { NewOrder } from "./pages/NewOrder";
+import styles from "./App.module.scss";
 
 // 1. Create order history page (can still use mock data, but use async function)
 // 2. New order page (using a form)
@@ -24,12 +25,12 @@ export type Pages = {
 
 export function App() {
   const [currentOrderId, setCurrentOrderId] = useState("112335");
-  const [currPage, setCurrentPage] = useState<keyof Pages>("TrackOrder"); 
+  const [currPage, setCurrentPage] = useState<keyof Pages>("LogIn"); 
 
   const pages = {
     TrackOrder: <TrackOrder orderId={currentOrderId}/>,
     HandleOrders: <HandleOrder orderId={currentOrderId} />,
-    LogIn: <LogIn />,
+    LogIn: <LogIn setCurrentPage={setCurrentPage}/>,
     OrdersHistory: (
       <OrdersHistory setCurrentPage={setCurrentPage} setCurrentOrderId={setCurrentOrderId}/>
     ),
@@ -38,9 +39,9 @@ export function App() {
 
   return (
     <>
-      <menu>        
-        <button onClick={() => setCurrentPage("TrackOrder")}>Track Order</button>
-        <button onClick={() => setCurrentPage("HandleOrders")}>HandleOrders</button>
+      <menu className={styles.menu}>        
+        {/* <button onClick={() => setCurrentPage("TrackOrder")}>Track Order</button> */}
+        {/* <button onClick={() => setCurrentPage("HandleOrders")}>HandleOrders</button> */}
         <button onClick={() => setCurrentPage("LogIn")}>Log In</button>
         <button onClick={() => setCurrentPage("OrdersHistory")}>Orders History</button>
         <button onClick={() => setCurrentPage("NewOrder")}>New Order</button>

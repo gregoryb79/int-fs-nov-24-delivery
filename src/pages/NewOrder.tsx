@@ -18,6 +18,7 @@ export function NewOrder({ setCurrentPage, setCurrentOrderId }: NewOrderProps) {
     console.log("new order");
 
     useEffect(() => {
+        console.log("creating new order or getting one in progress from local storage");
         setOrder(createLocalOrder());
     }, []);   
     
@@ -50,10 +51,10 @@ export function NewOrder({ setCurrentPage, setCurrentOrderId }: NewOrderProps) {
                 <li key={menuItem.id}>
                     <p>{menuItem.name} - {menuItem.price}</p> 
                     <section>
-                        <button onClick={() => currOrder && setOrder(updateItemAtLocalOrder(currOrder.id, menuItem,+1))}>
+                        <button onClick={() => currOrder && setOrder(updateItemAtLocalOrder(menuItem,+1))}>
                             ➕
                         </button>
-                        <button onClick={() => currOrder && setOrder(updateItemAtLocalOrder(currOrder.id, menuItem,-1))}>
+                        <button onClick={() => currOrder && setOrder(updateItemAtLocalOrder(menuItem,-1))}>
                             ➖
                         </button> 
                     </section>               
@@ -68,7 +69,7 @@ export function NewOrder({ setCurrentPage, setCurrentOrderId }: NewOrderProps) {
                 currOrder && await addOrder(currOrder);
                 currOrder && setCurrentOrderId(currOrder.id); 
                 setCurrentPage("OrdersHistory");
-                currOrder && clearLocalOrder(currOrder.id);
+                currOrder && clearLocalOrder();
                  
             }}>Submit Order</button>
         </main>

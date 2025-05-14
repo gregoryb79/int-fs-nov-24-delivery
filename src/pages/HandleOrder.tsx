@@ -60,32 +60,87 @@ type StepsProps = {
     updatePhase: (updatedPhase: number) => void;
     loading: boolean;
 };
-function Steps({ phase, updatePhase, loading}: StepsProps) {
+function Steps({ phase, updatePhase, loading }: StepsProps) {
     const currentStep = orderPhases.indexOf(phase);
 
     function isActive(step: OrderPhase) {
         return orderPhases.indexOf(step) <= currentStep;
     }
 
+    function handleKeyDown(event: React.KeyboardEvent<HTMLDivElement>, step: number) {
+        if (!loading && (event.key === "Enter" || event.key === " ")) {
+            event.preventDefault();
+            updatePhase(step);
+        }
+    }
+
     return (
-        <div className={styles.stepsContainer} style={{ "--step": currentStep }}>              
-            <div className={styles.step} data-active={isActive("received")}>
-                <button disabled={loading} onClick={() => updatePhase(0)}>We got your order!</button>
+        <div className={styles.stepsContainer} style={{ "--step": currentStep }} aria-disabled={loading}>
+            <div
+                className={styles.step}
+                data-active={isActive("received")}
+                onClick={() => !loading && updatePhase(0)} 
+                onKeyDown={(event) => handleKeyDown(event, 0)} 
+                role="button"
+                tabIndex={loading ? -1 : 0} 
+                aria-disabled={loading}
+            >
+                We got your order!
             </div>
-            <div className={styles.step} data-active={isActive("opened")}>
-                <button disabled={loading} onClick={() => updatePhase(1)}>The restaurant has seen your order</button>
+            <div
+                className={styles.step}
+                data-active={isActive("opened")}
+                onClick={() => !loading && updatePhase(1)}
+                onKeyDown={(event) => handleKeyDown(event, 1)}
+                role="button"
+                tabIndex={loading ? -1 : 0}
+                aria-disabled={loading}
+            >
+                The restaurant has seen your order
             </div>
-            <div className={styles.step} data-active={isActive("making")}>
-                <button disabled={loading} onClick={() => updatePhase(2)}>Your order is in the making</button>
+            <div
+                className={styles.step}
+                data-active={isActive("making")}
+                onClick={() => !loading && updatePhase(2)}
+                onKeyDown={(event) => handleKeyDown(event, 2)}
+                role="button"
+                tabIndex={loading ? -1 : 0}
+                aria-disabled={loading}
+            >
+                Your order is in the making
             </div>
-            <div className={styles.step} data-active={isActive("ready")}>
-                <button disabled={loading} onClick={() => updatePhase(3)}>The order is ready for pick-up</button> 
+            <div
+                className={styles.step}
+                data-active={isActive("ready")}
+                onClick={() => !loading && updatePhase(3)}
+                onKeyDown={(event) => handleKeyDown(event, 3)}
+                role="button"
+                tabIndex={loading ? -1 : 0}
+                aria-disabled={loading}
+            >
+                The order is ready for pick-up
             </div>
-            <div className={styles.step} data-active={isActive("picked-up")}>
-                <button disabled={loading} onClick={() => updatePhase(4)}>The courier is on the way with your food</button>
+            <div
+                className={styles.step}
+                data-active={isActive("picked-up")}
+                onClick={() => !loading && updatePhase(4)}
+                onKeyDown={(event) => handleKeyDown(event, 4)}
+                role="button"
+                tabIndex={loading ? -1 : 0}
+                aria-disabled={loading}
+            >
+                The courier is on the way with your food
             </div>
-            <div className={styles.step} data-active={isActive("arrived")}>
-                <button disabled={loading} onClick={() => updatePhase(5)}>Bon appetite!</button>
+            <div
+                className={styles.step}
+                data-active={isActive("arrived")}
+                onClick={() => !loading && updatePhase(5)}
+                onKeyDown={(event) => handleKeyDown(event, 5)}
+                role="button"
+                tabIndex={loading ? -1 : 0}
+                aria-disabled={loading}
+            >
+                Bon appetite!
             </div>
         </div>
     );

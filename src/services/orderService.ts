@@ -187,7 +187,13 @@ if (orders.length === 0) {
     generateOrders();
 }
 
-export function createLocalOrder() : Order{    
+export function createLocalOrder() : Order{  
+    const localOrder = JSON.parse(localStorage.getItem("NewLocalOrder") ?? "null");
+    console.log("localOrder", localOrder);
+    if (localOrder && localOrder.items.length > 0) {
+        console.log("existing localOrder found", localOrder);
+        return localOrder;
+    }  
     const newOrder: Order = {
         id: Date.now().toString(),
         phase: "received",
@@ -195,12 +201,12 @@ export function createLocalOrder() : Order{
         restaurant: "Nice Restaurant",
         items: [],
     };
-    localStorage.setItem(newOrder.id, JSON.stringify(newOrder));
+    localStorage.setItem("NewLocalOrder", JSON.stringify(newOrder));
     return newOrder;    
 }
 
-export function updateItemAtLocalOrder(orderId: string, item: MenuItem, change: number) : Order{
-    const localOrder = JSON.parse(localStorage.getItem(orderId) ?? "[]");
+export function updateItemAtLocalOrder(item: MenuItem, change: number) : Order{
+    const localOrder = JSON.parse(localStorage.getItem("NewLocalOrder") ?? "[]");
     console.log("localOrder items at start", localOrder.items);
     console.log("item to add", item);
 
@@ -224,10 +230,10 @@ export function updateItemAtLocalOrder(orderId: string, item: MenuItem, change: 
         localOrder.items.push(newItem);
     }    
     console.log("localOrder items at end", localOrder.items);    
-    localStorage.setItem(orderId, JSON.stringify(localOrder));   
+    localStorage.setItem("NewLocalOrder", JSON.stringify(localOrder));   
     return localOrder;
 }
 
-export function clearLocalOrder(orderId: string) {
-    localStorage.removeItem(orderId);
+export function clearLocalOrder() {
+    localStorage.removeItem("NewLocalOrder");
 }
