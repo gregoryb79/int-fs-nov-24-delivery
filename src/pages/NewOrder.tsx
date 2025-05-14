@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Main } from "../components/Main";
 import { getItems, type Item } from "../models/item";
+import { PrimaryButton } from "../components/PrimaryButton";
 
 import styles from "./NewOrder.module.scss";
-import { PrimaryButton } from "../components/PrimaryButton";
 
 export function NewOrder() {
     const [order, setOrder] = useState<Record<string, number>>({});
