@@ -1,9 +1,11 @@
 .root {
     width: min(60ch, 100% - 2rem);
+    flex: 1;
+    overflow: hidden;
     margin-inline: auto;
     background: var(--primary-500);
     padding: 1rem;
-    margin-block-start: 2rem;
+    margin-block: 2rem;
     border-radius: 8px;
 
     display: flex;
