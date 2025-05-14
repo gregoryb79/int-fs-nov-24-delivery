@@ -4,15 +4,18 @@ import { Main } from "../components/Main";
 
 import styles from "./TrackOrder.module.scss";
 import cover from "../assets/order-status-cover.jpg";
+import { useParams } from "react-router";
 
-type TrackOrderProps = {
-    orderId: string,
-};
-export function TrackOrder({ orderId }: TrackOrderProps) {
+export function TrackOrder() {
+    const { orderId } = useParams<{ orderId: string }>();
     const [order, setOrder] = useState<Order>();
     const [error, setError] = useState<string>();
 
     useEffect(() => {
+        if (!orderId) {
+            return;
+        }
+        
         let isCanceled = false;
 
         setOrder(undefined);
