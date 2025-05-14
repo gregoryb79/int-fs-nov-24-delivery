@@ -3,30 +3,38 @@ import { Main } from "../components/Main";
 import { getItems, type Item } from "../models/item";
 
 import styles from "./NewOrder.module.scss";
+import { PrimaryButton } from "../components/PrimaryButton";
 
 export function NewOrder() {
+    const [order, setOrder] = useState<Record<string, number>>({});
+
+    function addToOrder(itemId: string) {
+        setOrder({
+            ...order,
+            [itemId]: (order[itemId] ?? 0) + 1
+        });
+    }
+
     return (
-        <Main>
+        <Main large>
             <h1>New order</h1>
             <div className={styles.container}>
                 <article className={styles.menu}>
                     <h2>Menu</h2>
-                    <ItemsList />
+                    <ItemsList onAddToOrderClick={addToOrder} />
                 </article>
-                <OrderSummary />
+                <article className={styles.summmary}>
+                    <h2>Order summary</h2>
+                    <OrderSummary order={order} />
+                </article>
             </div>
         </Main>
     );
 }
 
-function ItemsList() {
-    const [items, setItems] = useState<Item[]>();
-
-    useEffect(() => {
-        setItems(undefined);
-        getItems()
-            .then(setItems);
-    }, []);
+type ItemsListProps = { onAddToOrderClick(itemId: string): void };
+function ItemsList({ onAddToOrderClick }: ItemsListProps) {
+    const items = useItems();
 
     if (!items) {
         return (
@@ -36,26 +44,62 @@ function ItemsList() {
 
     return (
         <ul>
-            {items.map((item) => <li key={item.id} className={styles.menuItem}><MenuItem {...item} /></li>)}
+            {items.map((item) => <li key={item.id} className={styles.menuItem}>
+                <MenuItem {...item} onAddToOrderClick={() => onAddToOrderClick(item.id)} />
+            </li>)}
         </ul>
     );
 }
 
-function MenuItem({ imgSrc, name, description, priceInAgorot }: Item) {
+type MenuItemProps = Item & { onAddToOrderClick(): void }
+function MenuItem({ imgSrc, name, description, priceInAgorot, onAddToOrderClick }: MenuItemProps) {
     return (
         <>
             <img src={imgSrc} alt="" />
             <h3>{name}</h3>
             <p>{description}</p>
             <p>{priceInAgorot / 100}₪</p>
+            <PrimaryButton onClick={onAddToOrderClick}>Add to order</PrimaryButton>
         </>
     );
 }
 
-function OrderSummary() {
+type OrderSummaryProps = { order: Record<string, number> };
+function OrderSummary({ order }: OrderSummaryProps) {
+    const items = useItems();
+
+    if (Object.keys(order).length === 0) {
+        return <p>Let's add some items to your order!</p>;
+    }
+
     return (
-        <article className={styles.summmary}>
-            <h2>Order summary</h2>
-        </article>
+        <>
+            <ul>
+                {Object.entries(order).map(([id, quantity]) => {
+                    const item = items?.find((item) => item.id === id);
+
+                    return (
+                        <li key={id} className={styles.orderEntry}>
+                            <span>{item?.name}</span>
+                            <span>x{quantity}</span>
+                            <span>{(item?.priceInAgorot ?? 0) * quantity / 100}₪</span>
+                        </li>
+                    );
+                })}
+            </ul>
+            <PrimaryButton>Place order</PrimaryButton>
+        </>
     );
+}
+
+function useItems() {
+    const [items, setItems] = useState<Item[]>();
+
+    useEffect(() => {
+        setItems(undefined);
+        getItems()
+            .then(setItems);
+    }, []);
+
+    return items;
 }

@@ -1,5 +1,6 @@
 .root {
-    width: min(60ch, 100% - 2rem);
+    --max-width: 60ch;
+    width: min(var(--max-width), 100% - 2rem);
     flex: 1;
     overflow: hidden;
     margin-inline: auto;
@@ -11,4 +12,8 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+
+    &[data-large] {
+        --max-width: 80ch;
+    }
 }
