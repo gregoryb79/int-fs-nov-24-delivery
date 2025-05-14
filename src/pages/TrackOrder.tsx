@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import styles from "./TrackOrder.module.scss";
-import cover from "./assets/order-status-cover.jpg";
-import { getOrderById, orderPhases, type Order, type OrderPhase } from "./order";
+import { getOrderById, orderPhases, timestampFormater, type Order, type OrderPhase } from "../models/order";
+import { Main } from "../components/Main";
 
-const timestampFormater = new Intl.DateTimeFormat("he", {
-    timeStyle: "short",
-    dateStyle: "short",
-});
+import styles from "./TrackOrder.module.scss";
+import cover from "../assets/order-status-cover.jpg";
 
 type TrackOrderProps = {
     orderId: string,
@@ -28,12 +25,12 @@ export function TrackOrder({ orderId }: TrackOrderProps) {
 
                 setOrder(order);
             })
-            .catch(() => {
+            .catch((error: Error) => {
                 if (isCanceled) {
                     return;
                 }
 
-                setError(`Order ${orderId} was not found.`);
+                setError(error.message);
             });
 
         return () => {
@@ -43,24 +40,24 @@ export function TrackOrder({ orderId }: TrackOrderProps) {
 
     if (error) {
         return (
-            <main className={styles.container}>
+            <Main>
                 <h1>Your order status</h1>
                 <p>{error}</p>
-            </main>
+            </Main>
         );
     }
 
     if (!order) {
         return (
-            <main className={styles.container}>
+            <Main>
                 <h1>Your order status</h1>
                 <p>Loading...</p>
-            </main>
+            </Main>
         )
     }
 
     return (
-        <main className={styles.container}>
+        <Main>
             <h1>Your order status</h1>
             <img src={cover} className={styles.cover} alt="" />
             <Steps phase={order.phase} />
@@ -75,7 +72,7 @@ export function TrackOrder({ orderId }: TrackOrderProps) {
                     {order.items.map((item, index) => <li key={index}>{item}</li>)}
                 </ul>
             </details>
-        </main>
+        </Main>
     );
 }
 
