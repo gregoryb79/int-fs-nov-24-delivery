@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, redirect } from "react-router";
 import { OrderHistory } from "./pages/OrderHistory";
 import { NewOrder } from "./pages/NewOrder";
 import { TrackOrder } from "./pages/TrackOrder";
@@ -12,6 +12,7 @@ export const router = createBrowserRouter([
         path: "/",
         Component: App,
         children: [
+            { index: true, loader: () => redirect("/order-history") },
             { path: "*", Component: NotFound },
             {
                 path: "/order-history",
