@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Main } from "../components/Main";
-import { getItems, type Item } from "../models/item";
+import { type Item } from "../models/item";
 import { PrimaryButton } from "../components/PrimaryButton";
 
 import styles from "./NewOrder.module.scss";
+import { useLoaderData } from "react-router";
 
 export function NewOrder() {
     const [order, setOrder] = useState<Record<string, number>>({});
@@ -34,7 +35,7 @@ export function NewOrder() {
 
 type ItemsListProps = { onAddToOrderClick(itemId: string): void };
 function ItemsList({ onAddToOrderClick }: ItemsListProps) {
-    const items = useItems();
+    const items = useLoaderData<Item[]>();
 
     if (!items) {
         return (
@@ -66,7 +67,7 @@ function MenuItem({ imgSrc, name, description, priceInAgorot, onAddToOrderClick 
 
 type OrderSummaryProps = { order: Record<string, number> };
 function OrderSummary({ order }: OrderSummaryProps) {
-    const items = useItems();
+    const items = useLoaderData<Item[]>();
 
     if (Object.keys(order).length === 0) {
         return <p>Let's add some items to your order!</p>;
@@ -90,16 +91,4 @@ function OrderSummary({ order }: OrderSummaryProps) {
             <PrimaryButton>Place order</PrimaryButton>
         </>
     );
-}
-
-function useItems() {
-    const [items, setItems] = useState<Item[]>();
-
-    useEffect(() => {
-        setItems(undefined);
-        getItems()
-            .then(setItems);
-    }, []);
-
-    return items;
 }
