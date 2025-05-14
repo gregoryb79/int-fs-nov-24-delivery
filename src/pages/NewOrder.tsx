@@ -49,7 +49,8 @@ export function NewOrder({ setCurrentPage, setCurrentOrderId }: NewOrderProps) {
             <ul>
                 {menu.map((menuItem) => (
                 <li key={menuItem.id}>
-                    <p>{menuItem.name} - {menuItem.price}</p> 
+                    <img src={menuItem.imgSource} alt={menuItem.name} />
+                    <p>{menuItem.name} - ${menuItem.price.toFixed(2)}</p> 
                     <section>
                         <button onClick={() => currOrder && setOrder(updateItemAtLocalOrder(menuItem,+1))}>
                             ➕
