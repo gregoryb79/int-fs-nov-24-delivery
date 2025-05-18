@@ -1,22 +1,25 @@
-import type { Pages } from "../App";
+
+import { useNavigate } from "react-router";
 import { useLogIn } from "../hooks/useLogIn";
 import styles from "./LogIn.module.scss";
 import { Spinner } from "./components/Spinner";
 
-type LogInProps = {
-    setCurrentPage: (page: keyof Pages) => void;}
-export function LogIn({ setCurrentPage }: LogInProps) {
+
+export function LogIn() {
+    const navigate = useNavigate();
+    
     function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);        
         const username = formData.get("username") as string;
         console.log("username", username);
         localStorage.setItem("userId", username);
-        setCurrentPage("OrdersHistory");
+        
+        navigate(`/orders-history`);   
     }
 
     console.log("LogIn page");
-    const {user, error, loading} = useLogIn(() => setCurrentPage("OrdersHistory"));   
+    const {user, error, loading} = useLogIn(() => navigate(`/orders-history`));   
 
     return (
         <main className={styles.container}>

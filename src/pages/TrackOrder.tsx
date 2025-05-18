@@ -5,18 +5,26 @@ import type { OrderPhase}  from "../services/orderService";
 import { Spinner } from "./components/Spinner";
 import { OrderDetails } from "./components/OrderDetails";
 import { useOrder } from "../hooks/useOrder";
+import { useParams } from "react-router";
 
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
     dateStyle: "short",
 });
 
-type TrackOrderProps = {
-    orderId: string,
-};
-export function TrackOrder({ orderId }: TrackOrderProps) {
+
+export function TrackOrder() {
     // const [order, setOrder] = useState<Order>();
-    // const [error, setError] = useState<string>();        
+    // const [error, setError] = useState<string>();  
+    const {orderId} = useParams(); 
+    if (!orderId) {
+        return (
+            <main className={styles.container}>
+                <h1>Your order status</h1>
+                <p>Order ID is missing.</p>
+            </main>
+        );
+    }    
     const {order, error} = useOrder(orderId);
 
     // useEffect(() => {

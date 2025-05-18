@@ -5,17 +5,24 @@ import type { OrderPhase}  from "../services/orderService";
 import { Spinner } from "./components/Spinner";
 import { OrderDetails } from "./components/OrderDetails";
 import { useOrder } from "../hooks/useOrder";
+import { useParams } from "react-router";
 
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
     dateStyle: "short",
 });
 
-type HandleOrderProps = {
-    orderId: string,    
-};
-export function HandleOrder({ orderId}: HandleOrderProps) {
+export function HandleOrder() {
     
+    const {orderId} = useParams(); 
+    if (!orderId) {
+        return (
+            <main className={styles.container}>
+                <h1>Your order status</h1>
+                <p>Order ID is missing.</p>
+            </main>
+        );
+    }   
     const { order, error, loading, updatePhase } = useOrder(orderId); 
 
     if (error) {

@@ -1,16 +1,15 @@
 import { Spinner } from "./components/Spinner";
 import styles from "./OrdersHistory.module.scss";
-import type { Pages } from "../App";
 import { useOrders } from "../hooks/useOrders";
+import { useNavigate } from "react-router";
 
-type OrdersHistoryProps = {
-  setCurrentPage: (page: keyof Pages) => void;
-  setCurrentOrderId: (orderId: string) => void;
-};
-
-export function OrdersHistory({ setCurrentPage, setCurrentOrderId }: OrdersHistoryProps) {
+export function OrdersHistory() {
 
   const {orders, error} = useOrders(); 
+  const navigate = useNavigate();
+    function navTo (page: string) {
+        navigate(`/${page}`);
+    };
 
   if (error) {
     return (
@@ -41,10 +40,10 @@ export function OrdersHistory({ setCurrentPage, setCurrentOrderId }: OrdersHisto
             <p>Restaurant: {order.restaurant}</p>
             <p>Status: {order.phase}</p>
             <p>Timestamp: {new Date(order.timestamp).toLocaleString()}</p>
-            <button onClick={() => {setCurrentOrderId(order.id); setCurrentPage("TrackOrder");}}>
+            <button onClick={() => {navTo(`./track-order/${order.id}`);}}>
               Track
             </button>
-            <button onClick={() => {setCurrentOrderId(order.id); setCurrentPage("HandleOrders");}}>
+            <button onClick={() => {navTo(`./handle-order/${order.id}`);}}>
               Handle
             </button>
           </li>

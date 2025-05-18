@@ -5,13 +5,9 @@ import { OrderDetails } from "./components/OrderDetails";
 import { Spinner } from "./components/Spinner";
 import styles from "./NewOrder.module.scss";
 import { useAddOrder } from "../hooks/useAddOrder";
-import type { Pages } from "../App";
+import { useNavigate } from "react-router";
 
-type NewOrderProps = {
-  setCurrentPage: (page: keyof Pages) => void;
-  setCurrentOrderId: (orderId: string) => void;
-};
-export function NewOrder({ setCurrentPage, setCurrentOrderId }: NewOrderProps) {    
+export function NewOrder() {    
     const [currOrder, setOrder] = useState<Order>();
     const {menu, error : useMenuError} = useMenu(); 
     const {addOrder, error: addOrderError, loading } = useAddOrder();
@@ -21,6 +17,11 @@ export function NewOrder({ setCurrentPage, setCurrentOrderId }: NewOrderProps) {
         console.log("creating new order or getting one in progress from local storage");
         setOrder(createLocalOrder());
     }, []);   
+
+    const navigate = useNavigate();
+    function navTo (page: string) {
+        navigate(`/${page}`);
+    };
     
     if (useMenuError) {
         return (
@@ -67,11 +68,9 @@ export function NewOrder({ setCurrentPage, setCurrentOrderId }: NewOrderProps) {
             {currOrder?.items.length ? (<OrderDetails order={currOrder} />) 
             : (<p>No items in your order yet.</p>)}
             <button onClick={async () => {
-                currOrder && await addOrder(currOrder);
-                currOrder && setCurrentOrderId(currOrder.id); 
-                setCurrentPage("OrdersHistory");
-                currOrder && clearLocalOrder();
-                 
+                currOrder && await addOrder(currOrder);                 
+                navTo("/orders-history");
+                currOrder && clearLocalOrder();                 
             }}>Submit Order</button>
         </main>
     );

@@ -1,10 +1,6 @@
-import { useState, type ReactNode } from "react";
-import { TrackOrder } from "./pages/TrackOrder";
-import { HandleOrder } from "./pages/HandleOrder";
-import { LogIn } from "./pages/LogIn";
-import { OrdersHistory } from "./pages/OrdersHistory";
-import { NewOrder } from "./pages/NewOrder";
+
 import styles from "./App.module.scss";
+import { Outlet, useNavigate} from "react-router";
 
 // 1. Create order history page (can still use mock data, but use async function)
 // 2. New order page (using a form)
@@ -15,38 +11,31 @@ import styles from "./App.module.scss";
 // 5. Implement generic useAsync hook
 // 6. Solve prop-drilling and synced states problem??
 
-export type Pages = {
-  TrackOrder: ReactNode;
-  HandleOrders: ReactNode;
-  LogIn: ReactNode;
-  OrdersHistory: ReactNode;
-  NewOrder: ReactNode;
-};
 
-export function App() {
-  const [currentOrderId, setCurrentOrderId] = useState("112335");
-  const [currPage, setCurrentPage] = useState<keyof Pages>("LogIn"); 
 
-  const pages = {
-    TrackOrder: <TrackOrder orderId={currentOrderId}/>,
-    HandleOrders: <HandleOrder orderId={currentOrderId} />,
-    LogIn: <LogIn setCurrentPage={setCurrentPage}/>,
-    OrdersHistory: (
-      <OrdersHistory setCurrentPage={setCurrentPage} setCurrentOrderId={setCurrentOrderId}/>
-    ),
-    NewOrder: <NewOrder setCurrentPage={setCurrentPage} setCurrentOrderId={setCurrentOrderId}/>,
+export function App() {  
+
+  return (
+     <>
+      <Nav />
+      <Outlet />
+    </>
+  );
+}
+
+export function Nav() {
+  const navigate = useNavigate();
+  function navTo (page: string) {
+    navigate(`${page}`);
   };
 
   return (
-    <>
-      <menu className={styles.menu}>        
-        {/* <button onClick={() => setCurrentPage("TrackOrder")}>Track Order</button> */}
-        {/* <button onClick={() => setCurrentPage("HandleOrders")}>HandleOrders</button> */}
-        <button onClick={() => setCurrentPage("LogIn")}>Log In</button>
-        <button onClick={() => setCurrentPage("OrdersHistory")}>Orders History</button>
-        <button onClick={() => setCurrentPage("NewOrder")}>New Order</button>
+    <nav>
+      <menu className={styles.menu}>                
+        <button onClick={() => navTo("/login")}>Log In</button>
+        <button onClick={() => navTo("/orders-history")}>Orders History</button>
+        <button onClick={() => navTo("/new-order")}>New Order</button>
       </menu>
-      {pages[currPage] || <p>Ooops, something went wrong...</p>}
-    </>
+    </nav>
   );
 }
