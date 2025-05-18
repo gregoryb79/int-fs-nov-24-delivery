@@ -1,79 +1,63 @@
-import { useEffect, useState } from "react";
 import styles from "./TrackOrder.module.scss";
-import cover from "./assets/order-status-cover.jpg";
-
-// 1. Show loading even when an order was previously loaded
-// 2. Show error message on rejection
-// 3. Find and fix the bug
-
-const orderPhases = [
-    "received",
-    "opened",
-    "making",
-    "ready",
-    "picked-up",
-    "arrived",
-] as const;
-
-type OrderPhase = typeof orderPhases[number];
-
-type Order = {
-    id: string,
-    phase: OrderPhase,
-    timestamp: number,
-    restaurant: string,
-    items: string[],
-};
-
-type TrackOrderProps = {
-    orderId: string,
-};
-
-async function getOrderById(id: string): Promise<Order> {
-    await new Promise<void>((resolve, reject) => {
-        const delay = (Math.random() * 2000) + 700;
-
-        return setTimeout(
-            () => {
-                if (id === "404") {
-                    reject();
-                } else {
-                    resolve();
-                }
-            },
-            delay
-        );
-    });
-
-    return {
-        id,
-        phase: "making",
-        timestamp: new Date(2025, 4, 7, 19).valueOf(),
-        restaurant: "A nice place",
-        items: [
-            "Burger",
-            "Fries",
-            "Soda",
-        ],
-    };
-}
+import cover from "../assets/order-status-cover.jpg";
+import { orderPhases  } from "../services/orderService";
+import type { OrderPhase}  from "../services/orderService";
+import { Spinner } from "./components/Spinner";
+import { OrderDetails } from "./components/OrderDetails";
+import { useOrder } from "../hooks/useOrder";
+import { useParams } from "react-router";
 
 const timestampFormater = new Intl.DateTimeFormat("he", {
     timeStyle: "short",
     dateStyle: "short",
 });
 
-export function TrackOrder({ orderId }: TrackOrderProps) {
-    const [order, setOrder] = useState<Order>();
-    const [error, setError] = useState<string>();
 
-    useEffect(() => {
-        setOrder(undefined);
-        setError(undefined);
-        getOrderById(orderId)
-            .then(setOrder)
-            .catch(() => setError(`Order ${orderId} was not found.`));
-    }, [orderId]);
+export function TrackOrder() {
+    // const [order, setOrder] = useState<Order>();
+    // const [error, setError] = useState<string>();  
+    const {orderId} = useParams(); 
+    if (!orderId) {
+        return (
+            <main className={styles.container}>
+                <h1>Your order status</h1>
+                <p>Order ID is missing.</p>
+            </main>
+        );
+    }    
+    const {order, error} = useOrder(orderId);
+
+    // useEffect(() => {
+        
+    //     let isCanceled = false;
+
+    //     async function fetchOrder() { 
+           
+    //         setOrder(undefined);
+    //         setError(undefined);            
+    //         try {
+    //             const fetchedOrder = await getOrderById(orderId);
+                                                 
+    //             if (!isCanceled) {
+    //                 setOrder(fetchedOrder);
+    //             }
+                              
+    //         } catch (error) {
+    //             if (!isCanceled) {
+    //                 if (error === "404") {
+    //                     setError(`Order ${orderId} was not found.`);
+    //                 } else if (error === "User not logged in") {
+    //                     setError("User not logged in. Please log in to handle orders.");
+    //                 }   
+    //             }          
+    //         } 
+    //     }
+    //     fetchOrder();
+
+    //     return () => {
+    //         isCanceled = true;
+    //     };
+    // }, [orderId]);
 
     if (error) {
         return (
@@ -88,6 +72,7 @@ export function TrackOrder({ orderId }: TrackOrderProps) {
         return (
             <main className={styles.container}>
                 <h1>Your order status</h1>
+                <Spinner/>
                 <p>Loading...</p>
             </main>
         )
@@ -96,6 +81,7 @@ export function TrackOrder({ orderId }: TrackOrderProps) {
     return (
         <main className={styles.container}>
             <h1>Your order status</h1>
+            {/* {loading && <Spinner/>}  */}
             <img src={cover} className={styles.cover} alt="" />
             <Steps phase={order.phase} />
             <article>
@@ -103,15 +89,12 @@ export function TrackOrder({ orderId }: TrackOrderProps) {
                 <p>Ordered from: <span>{order.restaurant}</span></p>
                 <p>Ordered on: <time dateTime={order.timestamp.toString()}>{timestampFormater.format(order.timestamp)}</time></p>
             </article>
-            <details>
-                <summary>Order details</summary>
-                <ul>
-                    {order.items.map((item, index) => <li key={index}>{item}</li>)}
-                </ul>
-            </details>
+            <OrderDetails order={order} />            
         </main>
     );
 }
+
+
 
 type StepsProps = {
     phase: OrderPhase;
