@@ -5,6 +5,8 @@ import { PrimaryButton } from "../components/PrimaryButton";
 
 import styles from "./NewOrder.module.scss";
 import { useLoaderData } from "react-router";
+import { createOrder } from "../models/order";
+import { useNavigate } from "react-router";
 
 export function NewOrder() {
     const [order, setOrder] = useState<Record<string, number>>({});
@@ -68,9 +70,19 @@ function MenuItem({ imgSrc, name, description, priceInAgorot, onAddToOrderClick 
 type OrderSummaryProps = { order: Record<string, number> };
 function OrderSummary({ order }: OrderSummaryProps) {
     const items = useLoaderData<Item[]>();
+    const navigate = useNavigate();
 
     if (Object.keys(order).length === 0) {
         return <p>Let's add some items to your order!</p>;
+    }
+
+    function onPlaceOrder() {     
+        console.log("Placing order", order);
+        createOrder(order).then(() => {
+            console.log("Order placed successfully");
+            navigate(`/order-history`);
+        }).catch((err) => {
+            console.error("Error placing order", err);  });
     }
 
     return (
@@ -88,7 +100,7 @@ function OrderSummary({ order }: OrderSummaryProps) {
                     );
                 })}
             </ul>
-            <PrimaryButton>Place order</PrimaryButton>
+            <PrimaryButton onClick={()=>onPlaceOrder()}>Place order</PrimaryButton>
         </>
     );
 }

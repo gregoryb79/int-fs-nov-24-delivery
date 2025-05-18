@@ -58,3 +58,24 @@ const randomDelay = () => new Promise<void>((resolve) => {
         delay
     );
 });
+
+export async function createOrder(orderSummary: Record<string, number>): Promise<void> {
+    console.log("Creating new order", orderSummary);
+
+    try {
+        const res = await fetch(`http://localhost:5000/orders`, {
+            method: "put",
+            body: JSON.stringify(orderSummary),
+            headers: {
+                "content-type": "application/json",
+            },
+        });
+        if (!res.ok) {
+            const message = await res.text();             
+            throw new Error(`Failed to create new order. Status: ${res.status}. Message: ${message}`);
+        }        
+    }catch (error) {
+        console.error("Error creating new order:", error);        
+    } 
+    
+}

@@ -1,7 +1,8 @@
 import express from "express";
 import path from "path";
 import { json } from "body-parser";
-import { router } from "./routers/items";
+import { router as itemsRouter} from "./routers/items";
+import { router as ordersRouter} from "./routers/orders";
 import cors from "cors";
 
 export const app = express();
@@ -17,4 +18,5 @@ app.use((req, _, next) => {
 
 app.use(json());
 
-app.use("/items", router);
+app.use("/items", itemsRouter);
+app.use("/orders", ordersRouter);
