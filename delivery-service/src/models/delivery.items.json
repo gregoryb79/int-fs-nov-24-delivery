@@ -3,6 +3,7 @@
     "$oid": "6829ec8f7cf72453a2c3b6b5"
   },
   "name": "Burger",
+  "imgSrc": "http://localhost:5000/assets/burger.jpg",
   "description": "A yummy burger",
   "priceInAgorot": 4000
 },
@@ -11,7 +12,8 @@
     "$oid": "6829ecd17cf72453a2c3b6b6"
   },
   "name": "French fries",
-  "description": "Crispy, delicious, french frize",
+  "imgSrc": "http://localhost:5000/assets/french fries.jpg",
+  "description": "Crispy, delicious, french fries",
   "priceInAgorot": 2500
 },
 {
@@ -19,6 +21,7 @@
     "$oid": "6829ecea7cf72453a2c3b6b7"
   },
   "name": "Soda",
+  "imgSrc": "http://localhost:5000/assets/soda.jpg",
   "description": "Fizzling soda",
   "priceInAgorot": 1000
 },
@@ -27,6 +30,7 @@
     "$oid": "6829ed077cf72453a2c3b6b8"
   },
   "name": "Mayo",
+  "imgSrc": "http://localhost:5000/assets/mayo.jpg",
   "description": "Our home-made mayo sauce",
   "priceInAgorot": 200
 }]
