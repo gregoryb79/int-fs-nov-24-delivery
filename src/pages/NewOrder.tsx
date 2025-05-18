@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Main } from "../components/Main";
-import { getItems, type Item } from "../models/item";
+import { type Item } from "../models/item";
 import { PrimaryButton } from "../components/PrimaryButton";
+import { useNavigate } from "react-router";
 
 import styles from "./NewOrder.module.scss";
+import { useLoaderData } from "react-router";
 
 export function NewOrder() {
     const [order, setOrder] = useState<Record<string, number>>({});
+    
 
     function addToOrder(itemId: string) {
         setOrder({
@@ -14,6 +17,8 @@ export function NewOrder() {
             [itemId]: (order[itemId] ?? 0) + 1
         });
     }
+
+    
 
     return (
         <Main large>
@@ -34,7 +39,7 @@ export function NewOrder() {
 
 type ItemsListProps = { onAddToOrderClick(itemId: string): void };
 function ItemsList({ onAddToOrderClick }: ItemsListProps) {
-    const items = useItems();
+    const items = useLoaderData<Item[]>();
 
     if (!items) {
         return (
@@ -66,10 +71,14 @@ function MenuItem({ imgSrc, name, description, priceInAgorot, onAddToOrderClick 
 
 type OrderSummaryProps = { order: Record<string, number> };
 function OrderSummary({ order }: OrderSummaryProps) {
-    const items = useItems();
+    const items = useLoaderData<Item[]>();
+    const navigate = useNavigate();
 
     if (Object.keys(order).length === 0) {
         return <p>Let's add some items to your order!</p>;
+    }
+    function onPlaceOrderClick() {         
+        navigate("/order-history");
     }
 
     return (
@@ -87,19 +96,7 @@ function OrderSummary({ order }: OrderSummaryProps) {
                     );
                 })}
             </ul>
-            <PrimaryButton>Place order</PrimaryButton>
+            <PrimaryButton onClick={onPlaceOrderClick}>Place order</PrimaryButton>
         </>
     );
-}
-
-function useItems() {
-    const [items, setItems] = useState<Item[]>();
-
-    useEffect(() => {
-        setItems(undefined);
-        getItems()
-            .then(setItems);
-    }, []);
-
-    return items;
 }
