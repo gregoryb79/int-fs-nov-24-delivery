@@ -12,24 +12,22 @@ export type Item = {
 };
 
 export async function getItems(): Promise<Item[]> {
-    await randomDelay();
-    
-    return [
-        { id: "1111", name: "Burger", description: "A yummy burger", imgSrc: burgerImg, priceInAgorot: 4000 },
-        { id: "2222", name: "French fries", description: "Crispy, delicious, french frize", imgSrc: frenchFriesImg, priceInAgorot: 2500 },
-        { id: "3333", name: "Soda", description: "Fizzling soda", imgSrc: sodaImg, priceInAgorot: 1000 },
-        { id: "4444", name: "Mayo", description: "Our home-made mayo sauce", imgSrc: mayoImg, priceInAgorot: 200 },
-    ];
-}
-
-const randomDelay = () => new Promise<void>((resolve) => {
-    const delay = (Math.random() * 2000) + 700;
-
-    return setTimeout(
-        () => {
-            resolve();
-        },
-        delay
-    );
-});
+    console.log("Fetching items from server...");
+    try {
+        const res = await fetch(`http://localhost:5000/items`);
+        if (!res.ok) {
+            const message = await res.text();             
+            throw new Error(`Failed to fetch watchlist. Status: ${res.status}. Message: ${message}`);
+        }
+        const items : Item [] =  await res.json();
+        if (items.length > 0) {
+            return items;            
+        }else{
+            return [];
+        } 
+    }catch (error) {
+        console.error("Error fetching items:", error);
+        return [];        
+    }
+};
 
