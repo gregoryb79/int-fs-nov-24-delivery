@@ -4,7 +4,7 @@ import sodaImg from "../assets/soda.jpg";
 import mayoImg from "../assets/mayo.jpg";
 
 export type Item = {
-    id: string,
+    _id: string,
     name: string,
     description: string,
     imgSrc: string,
