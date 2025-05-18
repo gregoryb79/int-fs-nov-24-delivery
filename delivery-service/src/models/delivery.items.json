@@ -1,0 +1,32 @@
+[{
+  "_id": {
+    "$oid": "6829ec8f7cf72453a2c3b6b5"
+  },
+  "name": "Burger",
+  "description": "A yummy burger",
+  "priceInAgorot": 4000
+},
+{
+  "_id": {
+    "$oid": "6829ecd17cf72453a2c3b6b6"
+  },
+  "name": "French fries",
+  "description": "Crispy, delicious, french frize",
+  "priceInAgorot": 2500
+},
+{
+  "_id": {
+    "$oid": "6829ecea7cf72453a2c3b6b7"
+  },
+  "name": "Soda",
+  "description": "Fizzling soda",
+  "priceInAgorot": 1000
+},
+{
+  "_id": {
+    "$oid": "6829ed077cf72453a2c3b6b8"
+  },
+  "name": "Mayo",
+  "description": "Our home-made mayo sauce",
+  "priceInAgorot": 200
+}]

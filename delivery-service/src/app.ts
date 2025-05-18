@@ -1,5 +1,6 @@
 import express from "express";
 import { json } from "body-parser";
+import { router } from "./routers/items";
 
 export const app = express();
 
@@ -10,4 +11,4 @@ app.use((req, _, next) => {
 
 app.use(json());
 
-// app.use("/api", apiRouter);
+app.use("/items", router);
