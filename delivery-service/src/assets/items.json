@@ -1,0 +1,10 @@
+[
+  { "name": "Cheeseburger", "price": 4.99, "imgSource": "http://localhost:5000/assets/cheesburger.jfif" },
+  { "name": "Veggie Burger", "price": 5.49, "imgSource": "http://localhost:5000/assets/veggie-burger.jfif" },
+  { "name": "Chicken Sandwich", "price": 6.99, "imgSource": "http://localhost:5000/assets/Chicken Sandwich.jfif" },
+  { "name": "Caesar Salad", "price": 7.99, "imgSource": "http://localhost:5000/assets/Caesar Salad.jfif" },
+  { "name": "French Fries", "price": 2.99, "imgSource": "http://localhost:5000/assets/French Fries.jfif" },
+  { "name": "Onion Rings", "price": 3.49, "imgSource": "http://localhost:5000/assets/Onion Rings.jfif" },
+  { "name": "Milkshake", "price": 3.99, "imgSource": "http://localhost:5000/assets/Milkshake.jfif" },
+  { "name": "Coke Zero", "price": 1.99, "imgSource": "http://localhost:5000/assets/Coke Zero.jfif" }
+]
