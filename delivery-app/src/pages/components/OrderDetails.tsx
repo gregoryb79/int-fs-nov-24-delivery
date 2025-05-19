@@ -4,6 +4,11 @@ type OrderDetailsProps = {
     order: Order;
 }
 export function OrderDetails({ order }: OrderDetailsProps) {
+    if (!order) {
+        console.error("Order is undefined");
+        return <p>Ooops, no order details...</p>;
+    }
+
     return (
         <details>
             <summary>Order details</summary>

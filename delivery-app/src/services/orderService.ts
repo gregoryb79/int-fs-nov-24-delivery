@@ -30,28 +30,36 @@ export type Order = {
 
 
 export async function getOrderById(id: string): Promise<Order> {
-    const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
-    const order = orders.find((order: Order) => order._id === id);
+    console.log("getting order by id", id);
 
-    await new Promise<void>((resolve, reject) => {
-        const delay = (Math.random() * 2000) + 700;
-
-        return setTimeout(() => {
-            const userId = localStorage.getItem("userId");
-            if (!order) {
-                reject("404");
-            } else if (!userId) {
-                reject("User not logged in");
-            } else {
-                resolve();
-            }
-        }, delay);
-    });    
-    
-    if (!order) {
-        throw new Error("404");
+    try {
+        const res = await fetch(`http://localhost:5000/orders/${id}`);
+        if (!res.ok) {
+            const message = await res.text();             
+            throw new Error(`Failed to fetch order. Status: ${res.status}. Message: ${message}`);
+        }
+        const receivedOrder = await res.json();
+        const items: OrderItem[] = receivedOrder.items.map((item: any) => 
+            ({...item._id, quantity: item.quantity}));
+        const order: Order = {
+            _id: receivedOrder._id,
+            phase: receivedOrder.phase,
+            restaurant: receivedOrder.restaurant,
+            items,
+            createdAt: receivedOrder.createdAt,
+            updatedAt: receivedOrder.updatedAt,
+        };            
+        
+        console.log("order from server", order);
+        if (order) {
+            return order;
+        } else {
+            throw new Error("Order not found on server");
+        }
+    } catch (error) {
+        console.error("Error fetching order:", error);
+        return Promise.reject(error);
     }
-    return order as Order;
 }
 
 export async function setOrderById(id: string, phase : number): Promise<void> {

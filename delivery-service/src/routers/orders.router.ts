@@ -27,7 +27,7 @@ router.get('/:id', async (req, res) => {
     }
 
     try {
-        const order = await Order.findById(id).populate("items._id");
+        const order = await Order.findById(id).populate("items._id");        
 
         if (!order) {
             res.status(404);

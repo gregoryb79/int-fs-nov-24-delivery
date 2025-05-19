@@ -7,12 +7,6 @@ import { OrderDetails } from "./components/OrderDetails";
 import { useOrder } from "../hooks/useOrder";
 import { useParams } from "react-router";
 
-const timestampFormater = new Intl.DateTimeFormat("he", {
-    timeStyle: "short",
-    dateStyle: "short",
-});
-
-
 export function TrackOrder() {
     // const [order, setOrder] = useState<Order>();
     // const [error, setError] = useState<string>();  
@@ -25,39 +19,7 @@ export function TrackOrder() {
             </main>
         );
     }    
-    const {order, error} = useOrder(orderId);
-
-    // useEffect(() => {
-        
-    //     let isCanceled = false;
-
-    //     async function fetchOrder() { 
-           
-    //         setOrder(undefined);
-    //         setError(undefined);            
-    //         try {
-    //             const fetchedOrder = await getOrderById(orderId);
-                                                 
-    //             if (!isCanceled) {
-    //                 setOrder(fetchedOrder);
-    //             }
-                              
-    //         } catch (error) {
-    //             if (!isCanceled) {
-    //                 if (error === "404") {
-    //                     setError(`Order ${orderId} was not found.`);
-    //                 } else if (error === "User not logged in") {
-    //                     setError("User not logged in. Please log in to handle orders.");
-    //                 }   
-    //             }          
-    //         } 
-    //     }
-    //     fetchOrder();
-
-    //     return () => {
-    //         isCanceled = true;
-    //     };
-    // }, [orderId]);
+    const {order, error} = useOrder(orderId); 
 
     if (error) {
         return (
@@ -85,9 +47,9 @@ export function TrackOrder() {
             <img src={cover} className={styles.cover} alt="" />
             <Steps phase={order.phase} />
             <article>
-                <p>Order number: <span>{order.id}</span></p>
+                <p>Order number: <span>{order._id}</span></p>
                 <p>Ordered from: <span>{order.restaurant}</span></p>
-                <p>Ordered on: <time dateTime={order.timestamp.toString()}>{timestampFormater.format(order.timestamp)}</time></p>
+                <p>Ordered on: <time dateTime={order.createdAt.toLocaleString()}></time></p>
             </article>
             <OrderDetails order={order} />            
         </main>
@@ -108,12 +70,12 @@ function Steps({ phase }: StepsProps) {
 
     return (
         <div className={styles.stepsContainer} style={{ "--step": currentStep }}>
-            <div className={styles.step} data-active={isActive("received")}>We got your order!</div>
-            <div className={styles.step} data-active={isActive("opened")}>The restaurant has seen your order</div>
-            <div className={styles.step} data-active={isActive("making")}>Your order is in the making</div>
-            <div className={styles.step} data-active={isActive("ready")}>The order is ready for pick-up</div>
-            <div className={styles.step} data-active={isActive("picked-up")}>The courier is on the way with your food</div>
-            <div className={styles.step} data-active={isActive("arrived")}>Bon appetite!</div>
+            <div className={styles.step} data-active={isActive("Received")}>We got your order!</div>
+            <div className={styles.step} data-active={isActive("Opened")}>The restaurant has seen your order</div>
+            <div className={styles.step} data-active={isActive("Making")}>Your order is in the making</div>
+            <div className={styles.step} data-active={isActive("Ready")}>The order is ready for pick-up</div>
+            <div className={styles.step} data-active={isActive("Picked-up")}>The courier is on the way with your food</div>
+            <div className={styles.step} data-active={isActive("Arrived")}>Bon appetite!</div>
         </div>
     );
 }
