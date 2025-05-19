@@ -200,7 +200,7 @@ export function createLocalOrder() : Order{
     }  
     const newOrder: Order = {
         _id: Date.now().toString(),
-        phase: "received",
+        phase: "Received",
         createdAt: Date.now().toString(),
         updatedAt: Date.now().toString(),
         restaurant: "Nice Restaurant",
