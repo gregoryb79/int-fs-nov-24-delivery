@@ -35,15 +35,16 @@ export function OrdersHistory() {
       <h1>Orders History</h1>
       <ul>
         {orders.map((order) => (
-          <li key={order.id}>
-            <h2>Order ID: {order.id}</h2>
+          <li key={order._id}>
+            <h2>Order ID: {order._id}</h2>
             <p>Restaurant: {order.restaurant}</p>
             <p>Status: {order.phase}</p>
-            <p>Timestamp: {new Date(order.timestamp).toLocaleString()}</p>
-            <button onClick={() => {navTo(`./track-order/${order.id}`);}}>
+            <p>Ordered: {new Date(order.createdAt).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })}</p>
+            <p>Updated: {new Date(order.updatedAt).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })}</p>
+            <button onClick={() => {navTo(`./track-order/${order._id}`);}}>
               Track
             </button>
-            <button onClick={() => {navTo(`./handle-order/${order.id}`);}}>
+            <button onClick={() => {navTo(`./handle-order/${order._id}`);}}>
               Handle
             </button>
           </li>

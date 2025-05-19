@@ -13,7 +13,7 @@ export function useMenu(){
           setError(undefined);
     
           try {
-            const fetchedMenu = await getMenu();
+            const fetchedMenu = await getMenu();           
     
             if (!isCanceled) {
                 setMenu(fetchedMenu);

@@ -40,7 +40,7 @@ export function NewOrder() {
             <p>Loading...</p>
         </main>
         );
-    }    
+    }
     
     return (
         <main className={styles.container}>
@@ -49,7 +49,7 @@ export function NewOrder() {
             {loading && <Spinner/>} 
             <ul>
                 {menu.map((menuItem) => (
-                <li key={menuItem.id}>
+                <li key={menuItem._id}>
                     <img src={menuItem.imgSource} alt={menuItem.name} />
                     <p>{menuItem.name} - ${menuItem.price.toFixed(2)}</p> 
                     <section>
@@ -69,7 +69,7 @@ export function NewOrder() {
             : (<p>No items in your order yet.</p>)}
             <button onClick={async () => {
                 currOrder && await addOrder(currOrder);                 
-                navTo("/orders-history");
+                navTo("./orders-history");
                 currOrder && clearLocalOrder();                 
             }}>Submit Order</button>
         </main>

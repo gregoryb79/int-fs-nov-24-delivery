@@ -8,7 +8,7 @@ const schema = new Schema({
     description: String,
     imgSrc: String,
     price: {
-        type: String,
+        type: Number,
         required: true,
     },
 }, { timestamps: true });

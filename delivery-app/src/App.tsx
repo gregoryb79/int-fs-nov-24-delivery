@@ -32,9 +32,9 @@ export function Nav() {
   return (
     <nav>
       <menu className={styles.menu}>                
-        <button onClick={() => navTo("/login")}>Log In</button>
-        <button onClick={() => navTo("/orders-history")}>Orders History</button>
-        <button onClick={() => navTo("/new-order")}>New Order</button>
+        <button onClick={() => navTo("./login")}>Log In</button>
+        <button onClick={() => navTo("./orders-history")}>Orders History</button>
+        <button onClick={() => navTo("./new-order")}>New Order</button>
       </menu>
     </nav>
   );

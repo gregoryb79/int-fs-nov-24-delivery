@@ -1,35 +1,37 @@
 import type { MenuItem } from "./menuService";
 
 export const orderPhases = [
-    "received",
-    "opened",
-    "making",
-    "ready",
-    "picked-up",
-    "arrived",
+    "Received",
+    "Opened",
+    "Making",
+    "Ready",
+    "Picked-up",
+    "Arrived",
 ] as const;
 
 export type OrderPhase = typeof orderPhases[number];
 
 export type OrderItem = {
+    _id: string;
     name: string; 
     quantity: number;
     price: number;
 };
 
 export type Order = {
-    id: string; 
-    phase: OrderPhase; 
-    timestamp: number; 
+    _id: string; 
+    phase: OrderPhase;     
     restaurant: string; 
-    items: OrderItem[]; 
+    items: OrderItem[];
+    createdAt: string;
+    updatedAt: string;
 };
 
 
 
 export async function getOrderById(id: string): Promise<Order> {
     const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
-    const order = orders.find((order: Order) => order.id === id);
+    const order = orders.find((order: Order) => order._id === id);
 
     await new Promise<void>((resolve, reject) => {
         const delay = (Math.random() * 2000) + 700;
@@ -56,7 +58,7 @@ export async function setOrderById(id: string, phase : number): Promise<void> {
     const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
     console.log("id", id);
     console.log("orders before update", orders);
-    const order = orders.find((order: Order) => order.id === id);
+    const order = orders.find((order: Order) => order._id === id);
     console.log("order before update", order.id);
 
     await new Promise<void>((resolve, reject) => {
@@ -85,53 +87,55 @@ export async function setOrderById(id: string, phase : number): Promise<void> {
    
 }
 
+type orderItemToStore = Omit<OrderItem, "name"|"price">;
 export async function addOrder(newOrder: Order): Promise<void> {
-    const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
-    console.log("orders before adding new order:", orders);
+    
+     const orderToAdd: orderItemToStore[] = newOrder.items.map(item => ({
+        _id: item._id,
+        quantity: item.quantity,
+    }));
 
-    await new Promise<void>((resolve, reject) => {
-        const delay = (Math.random() * 2000) + 700;       
-
-        return setTimeout(() => {
-            const userId = localStorage.getItem("userId");
-            if (!orders) {
-                reject("404");
-            } else if (!userId) {
-                reject("User not logged in");
-            } else if (orders.find((order: Order) => order.id === newOrder.id)) {
-                reject("Order already exists");            
-            } else {
-                resolve();
-            }
-        }, delay);
-    });
-
-    orders.push(newOrder);
-    console.log("orders after add", orders);        
-    localStorage.setItem("orders", JSON.stringify(orders));
+    try {
+        const res = await fetch("http://localhost:5000/orders", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                items: orderToAdd,                
+                restaurant: newOrder.restaurant,
+            }),
+        });
+        if (!res.ok) {
+            const message = await res.text();             
+            throw new Error(`Failed to create new order. Status: ${res.status}. Message: ${message}`);
+        }  
+    } catch (error) {
+        console.error("Error creating new order:", error);     
+    }
 }
 
 export async function getOrders(): Promise<Order[]> {
 
-    const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");    
+    console.log("getting orders from server");
 
-    await new Promise<void>((resolve, reject) => {
-        const delay = (Math.random() * 2000) + 700;
-
-        return setTimeout(() => {
-            const userId = localStorage.getItem("userId");
-            if (!userId) {
-                reject("User not logged in");
-            } else {
-                resolve();
-            }
-        }, delay);
-    });    
-    
-    if (!orders) {
-        throw new Error("404");
-    }
-    return orders;
+    try {
+        const res = await fetch("http://localhost:5000/orders");
+        if (!res.ok) {
+            const message = await res.text();             
+            throw new Error(`Failed to fetch orders. Status: ${res.status}. Message: ${message}`);
+        } 
+        const orders: Order[] = await res.json();
+        console.log("orders from server", orders);
+        if (orders.length > 0) {
+            return orders;
+        } else {
+            return [];
+        }
+    } catch (error) {
+        console.error("Error fetching orders:", error); 
+        return [];   
+    }    
 }
 
 function generateOrders() {
@@ -195,9 +199,10 @@ export function createLocalOrder() : Order{
         return localOrder;
     }  
     const newOrder: Order = {
-        id: Date.now().toString(),
+        _id: Date.now().toString(),
         phase: "received",
-        timestamp: Date.now(),
+        createdAt: Date.now().toString(),
+        updatedAt: Date.now().toString(),
         restaurant: "Nice Restaurant",
         items: [],
     };
@@ -223,6 +228,7 @@ export function updateItemAtLocalOrder(item: MenuItem, change: number) : Order{
     else if (change > 0) {
         console.log("adding new item", item);
         const newItem: OrderItem = {
+            _id: item._id,
             name: item.name,
             quantity: 1,
             price: item.price,

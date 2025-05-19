@@ -1,5 +1,5 @@
 export type MenuItem = {
-    id: string; 
+    _id: string; 
     name: string; 
     price: number;
     imgSource?: string;
@@ -27,24 +27,25 @@ if (menu.length === 0) {
 
 
 export async function getMenu(): Promise<MenuItem[]> {
+    console.log("getting menu from server");
+    // const menu = JSON.parse(localStorage.getItem("menu") ?? "[]");    
 
-    const menu = JSON.parse(localStorage.getItem("menu") ?? "[]");    
-
-    await new Promise<void>((resolve, reject) => {
-        const delay = (Math.random() * 2000) + 700;
-
-        return setTimeout(() => {
-            const userId = localStorage.getItem("userId");
-            if (!userId) {
-                reject("User not logged in");
-            } else {
-                resolve();
-            }
-        }, delay);
-    });    
+    try{
+        const res = await fetch("http://localhost:5000/items");   
+        if (!res.ok) {
+            const message = await res.text();             
+            throw new Error(`Failed to fetch menu. Status: ${res.status}. Message: ${message}`);
+        } 
+        const menu : MenuItem [] = await res.json();
+        console.log("menu from server", menu);
+        if (menu.length > 0) {
+            return menu;
+        }else {
+            return [];
+        }
+    }catch (error) {
+        console.error("Error fetching menu:", error);    
+        return [];    
+    } 
     
-    if (!menu) {
-        throw new Error("404");
-    }
-    return menu;
 }
