@@ -36,7 +36,7 @@ export function OrdersHistory() {
       <ul>
         {orders.map((order) => (
           <li key={order._id}>
-            <h2>Order ID: {order._id}</h2>
+            <h2>Order ID: {order._id.slice(-8).toUpperCase()}</h2>
             <p>Restaurant: {order.restaurant}</p>
             <p>Status: {order.phase}</p>
             <p>Ordered: {new Date(order.createdAt).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })}</p>
