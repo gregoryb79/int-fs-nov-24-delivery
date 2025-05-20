@@ -2,7 +2,7 @@
 import styles from "./App.module.scss";
 import { Outlet, useNavigate} from "react-router";
 import { useCheckLogIn, useDoLogOut } from "./hooks/useLogIn";
-import { use, useState } from "react";
+import { useState } from "react";
 
 export function App() {  
    const [loggedIn, setLoggedIn] = useState<boolean>(false);

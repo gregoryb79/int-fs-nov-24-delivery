@@ -1,5 +1,5 @@
 
-import { useNavigate, Link } from "react-router";
+import { useNavigate } from "react-router";
 import { useCheckLogIn, useDoRegister } from "../hooks/useLogIn";
 import styles from "./LogIn.module.scss";
 import { Spinner } from "./components/Spinner";
