@@ -6,6 +6,7 @@ import { App } from "./App";
 import { NotFound } from "./pages/NotFound";
 import { HandleOrder } from "./pages/HandleOrder";
 import { LogIn } from "./pages/LogIn";
+import { Register } from "./pages/Register";
 
 
 
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
             {
                 path: "/login",
                 Component: LogIn,
+            },
+            {
+                path: "/register",
+                Component: Register,
             },
         ],
     },

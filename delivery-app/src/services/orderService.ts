@@ -1,3 +1,4 @@
+import { apiFetch } from "./apiService";
 import type { MenuItem } from "./menuService";
 
 export const orderPhases = [
@@ -33,7 +34,7 @@ export async function getOrderById(id: string): Promise<Order> {
     console.log("getting order by id", id);
 
     try {
-        const res = await fetch(`http://localhost:5000/orders/${id}`);
+        const res = await apiFetch(`http://localhost:5000/orders/${id}`);
         if (!res.ok) {
             const message = await res.text();             
             throw new Error(`Failed to fetch order. Status: ${res.status}. Message: ${message}`);
@@ -104,7 +105,7 @@ export async function addOrder(newOrder: Order): Promise<void> {
     }));
 
     try {
-        const res = await fetch("http://localhost:5000/orders", {
+        const res = await apiFetch("http://localhost:5000/orders", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -128,7 +129,7 @@ export async function getOrders(): Promise<Order[]> {
     console.log("getting orders from server");
 
     try {
-        const res = await fetch("http://localhost:5000/orders");
+        const res = await apiFetch("http://localhost:5000/orders");
         if (!res.ok) {
             const message = await res.text();             
             throw new Error(`Failed to fetch orders. Status: ${res.status}. Message: ${message}`);
@@ -144,59 +145,6 @@ export async function getOrders(): Promise<Order[]> {
         console.error("Error fetching orders:", error); 
         return [];   
     }    
-}
-
-function generateOrders() {
-    const orders = [
-        {
-            id: "112335",
-            phase: "received",
-            timestamp: Date.now(),
-            restaurant: "McDonald's",
-            items: [
-                { name: "Big Mac", quantity: 2, price: 5.99 },
-                { name: "Fries", quantity: 1, price: 2.99 },
-            ],
-        },
-        {
-            id: "225914",
-            phase: "opened",
-            timestamp: Date.now(),
-            restaurant: "Burger King",
-            items: [
-                { name: "Whopper", quantity: 1, price: 6.99 },
-                { name: "Onion Rings", quantity: 2, price: 3.49 },
-            ],
-        },
-        {
-            id: "658891",
-            phase: "making",
-            timestamp: Date.now(),
-            restaurant: "KFC",
-            items: [
-                { name: "Chicken Bucket", quantity: 1, price: 12.99 },
-                { name: "Coleslaw", quantity: 3, price: 1.99 },
-            ],
-        },
-        {
-            id: "650091",
-            phase: "picked-up",
-            timestamp: Date.now(),
-            restaurant: "Pizza Hut",
-            items: [
-                { name: "Pepperoni Pizza", quantity: 1, price: 14.99 },
-                { name: "Garlic Bread", quantity: 2, price: 4.99 },
-            ],
-        },
-    ];
-    localStorage.setItem("orders", JSON.stringify(orders));
-}
-
-
-
-const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
-if (orders.length === 0) {
-    generateOrders();
 }
 
 export function createLocalOrder() : Order{  

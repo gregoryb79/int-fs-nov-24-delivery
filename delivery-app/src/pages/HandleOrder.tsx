@@ -51,9 +51,9 @@ export function HandleOrder() {
             {loading && <Spinner/>} 
             <Steps phase={order.phase} updatePhase={updatePhase} loading={loading} />
             <article>
-                <p>Order number: <span>{order.id}</span></p>
+                <p>Order number: <span>{order._id}</span></p>
                 <p>Ordered from: <span>{order.restaurant}</span></p>
-                <p>Ordered on: <time dateTime={order.timestamp.toString()}>{timestampFormater.format(order.timestamp)}</time></p>
+                <p>Ordered on: <time dateTime={order.createdAt.toString()}>{timestampFormater.format(order.timestamp)}</time></p>
             </article>
             <OrderDetails order={order}/>
         </main>
