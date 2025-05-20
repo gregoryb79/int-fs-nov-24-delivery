@@ -3,11 +3,12 @@ import { useNavigate, Link } from "react-router";
 import { useCheckLogIn, useDoRegister } from "../hooks/useLogIn";
 import styles from "./LogIn.module.scss";
 import { Spinner } from "./components/Spinner";
+import { useOutletContext } from "react-router";
 
 
 export function Register() {
     const navigate = useNavigate();
-    
+    const { setLoggedIn } = useOutletContext<{ setLoggedIn: (v: boolean) => void }>();
     
     function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -20,13 +21,14 @@ export function Register() {
     }
 
     console.log("LogIn page");
-    const {error, loading: loadingCheck} = useCheckLogIn(() => navigate(`/orders-history`));
-    const { error: errorRegister, loading: loadingRegister, doRegister } = useDoRegister(() => navigate(`/orders-history`));   
+    const {loading: loadingCheck} = useCheckLogIn(() => navigate(`/orders-history`));
+    const {loading: loadingRegister, doRegister } = useDoRegister(() => {setLoggedIn(true);
+                                                                        navigate(`/orders-history`)});   
     const isLoading = loadingRegister || loadingCheck;
 
     return (
         <main className={styles.container}>
-            <h1>Log In</h1>
+            <h1>Register</h1>
             {isLoading && <Spinner/>} 
             <form onSubmit={handleLogin}>
                 <label htmlFor="username">Username:</label>
@@ -34,7 +36,7 @@ export function Register() {
                 <label htmlFor="password">Password:</label>
                 <input disabled={isLoading} type="password" id="password" name="password" placeholder="password" aria-label="Enter your password" required />
                 <label htmlFor="repeatPassword">Repeat password:</label>
-                <input disabled={isLoading} type="repeatPassword" id="repeatPassword" name="repeatPassword" placeholder="repeat password" aria-label="Repeat your password" required />
+                <input disabled={isLoading} type="password" id="repeatPassword" name="repeatPassword" placeholder="repeat password" aria-label="Repeat your password" required />
                 <button disabled={isLoading} type="submit">Register</button>                
             </form>
         </main>

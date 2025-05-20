@@ -77,7 +77,7 @@ router.post("/register", async (req, res) => {
 
         const expires = new Date();
         expires.setDate(expires.getDate() + 1);
-
+        console.log(`user registered, sending cookie with ${createdUser._id} and expires ${expires}`); 
         res.cookie("userId", createdUser._id, {
             expires,
             signed: true,

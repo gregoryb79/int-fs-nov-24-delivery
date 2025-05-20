@@ -4,8 +4,7 @@ export async function apiFetch(input: RequestInfo, init?: RequestInit) {
     const response = await fetch(input, {
         ...init,
         credentials: "include",
-    });
-    // const navigate = useNavigate();
+    });    
     
     console.log("response", response.status);
 

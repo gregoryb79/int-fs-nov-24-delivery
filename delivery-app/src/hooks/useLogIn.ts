@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { checkLogIn, putLogIn, postRegister } from "../services/logInService";
+import { checkLogIn, putLogIn, postRegister, logOut } from "../services/logInService";
 
 export function useCheckLogIn(onSuccess: () => void) {
     const [error, setError] = useState<string>();
@@ -83,6 +83,44 @@ export function useDoLogIn(onSuccess: () => void) {
     }, []);
 
     return { error, loading, doLogIn};
+
+}
+
+export function useDoLogOut(onSuccess: () => void) {
+    const [error, setError] = useState<string>();
+    const [loading, setLoading] = useState(false);  
+    
+    let isCanceled = false;
+
+        async function doLogOut() {
+            setError(undefined);
+            setLoading(true);
+
+            try {
+                console.log("logging out"); 
+                await logOut();               
+                if (!isCanceled) {                                                          
+                    onSuccess();                    
+                }
+            } catch (error) {
+                if (!isCanceled) {
+                    setError(error as string);
+                    console.error("Error logging out:", error);                    
+                }
+            } finally {
+                if (!isCanceled) {
+                    setLoading(false);
+                }
+            }
+        }
+
+    useEffect(() => {       
+        return () => {
+            isCanceled = true;
+        };
+    }, []);
+
+    return { error, loading, doLogOut};
 
 }
 

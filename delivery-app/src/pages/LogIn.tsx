@@ -3,11 +3,12 @@ import { useNavigate, Link } from "react-router";
 import { useCheckLogIn, useDoLogIn } from "../hooks/useLogIn";
 import styles from "./LogIn.module.scss";
 import { Spinner } from "./components/Spinner";
+import { useOutletContext } from "react-router";
 
 
 export function LogIn() {
     const navigate = useNavigate();
-    
+    const { setLoggedIn } = useOutletContext<{ setLoggedIn: (v: boolean) => void }>();
     
     function handleLogin(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
@@ -19,8 +20,9 @@ export function LogIn() {
     }
 
     console.log("LogIn page");
-    const {error, loading: loadingCheck} = useCheckLogIn(() => navigate(`/orders-history`));
-    const { error: errorLogIn, loading: loadingLogin, doLogIn } = useDoLogIn(() => navigate(`/orders-history`));   
+    const { loading: loadingCheck} = useCheckLogIn(() => navigate(`/orders-history`));
+    const { loading: loadingLogin, doLogIn } = useDoLogIn(() => {setLoggedIn(true);
+                                                                                    navigate(`/orders-history`);});   
     const isLoading = loadingLogin || loadingCheck;
 
     return (

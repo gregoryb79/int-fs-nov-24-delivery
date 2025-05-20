@@ -69,3 +69,19 @@ export async function postRegister(email: string, password: string): Promise<boo
     }            
         
 }
+
+export async function logOut(): Promise<void> {
+    console.log("logging out");
+
+    try {
+        const res = await apiFetch("http://localhost:5000/login/logout");
+        console.log("res", res);
+        if (!res.ok) {
+            const message = await res.text();
+            throw new Error(`Failed to log out. Status: ${res.status}. Message: ${message}`);
+        }        
+    } catch (error) {
+        console.error("Error checking logging out:", error);        
+    }            
+        
+}
