@@ -5,7 +5,7 @@ import { authenticate } from '../middleware/authenticate';
 
 export const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/',authenticate, async (req, res) => {
 
     try {
         const items = await Item.find();

@@ -2,6 +2,7 @@ import express from 'express';
 import { User } from '../models/users.model';
 import crypto from "crypto";
 import mongoose from 'mongoose';
+import { authenticate } from '../middleware/authenticate';
 // import { authenticate } from '../middleware/authenticate';
 
 export const router = express.Router();
@@ -94,7 +95,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-router.get("/logout", async (_, res) => {
+router.get("/logout", authenticate, async (_, res) => {
     res.clearCookie("userId", { httpOnly: true, signed: true });
     res.send("Logged out successfully.");
 });

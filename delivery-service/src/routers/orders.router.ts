@@ -6,7 +6,7 @@ import bodyParser from 'body-parser';
 
 export const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', authenticate, async (req, res) => {
     console.log('getting all orders');
     try {
         const orders = await Order.find().populate("items._id");
@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', authenticate, async (req, res) => {
     const id = req.params.id;
     console.log(`getting order with id ${id}`);
 
@@ -42,7 +42,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', authenticate, async (req, res) => {
     const order = req.body;
     console.log(`putting new order to DB`, order);
 
@@ -63,7 +63,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticate, async (req, res) => {
     const id = req.params.id;
     console.log(`updating order with id ${id}`);
     const order = req.body;
