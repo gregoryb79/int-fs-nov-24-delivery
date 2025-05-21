@@ -1,0 +1,32 @@
+.loginForm{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    // height: 100vh;
+
+    .inputsSection{
+        display: flex;
+        flex-direction: column;
+        align-items: start;        
+    }
+    input{
+        font-size: inherit;
+    }
+    .passwordInput{
+        position: relative;
+    }
+    .eyeButton{
+        position: absolute;
+        right: 0.5rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2em;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 0;
+        z-index: 1;        
+    }
+}
