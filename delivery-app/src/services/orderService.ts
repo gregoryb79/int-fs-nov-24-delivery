@@ -64,35 +64,25 @@ export async function getOrderById(id: string): Promise<Order> {
 }
 
 export async function setOrderById(id: string, phase : number): Promise<void> {
-    const orders = JSON.parse(localStorage.getItem("orders") ?? "[]");
-    console.log("id", id);
-    console.log("orders before update", orders);
-    const order = orders.find((order: Order) => order._id === id);
-    console.log("order before update", order.id);
+    
 
-    await new Promise<void>((resolve, reject) => {
-        const delay = (Math.random() * 2000) + 700;       
-
-        return setTimeout(() => {
-            const userId = localStorage.getItem("userId");
-            if (!orders) {
-                reject("404");
-            } else if (!userId) {
-                reject("User not logged in");
-            } else {
-                resolve();
-            }
-        }, delay);
-    });
-
-    if (!order) {
-        console.log("order not found", id);
-        throw new Error("404");
-    }   
-
-    order.phase = orderPhases[phase];
-    console.log("orders after update", orders);        
-    localStorage.setItem("orders", JSON.stringify(orders));
+     try {
+        const res = await apiFetch(`http://localhost:5000/orders/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({                                
+                phase: orderPhases[phase],
+            }),
+        });
+        if (!res.ok) {
+            const message = await res.text();             
+            throw new Error(`Failed to create new order. Status: ${res.status}. Message: ${message}`);
+        }  
+    } catch (error) {
+        console.error("Error creating new order:", error);     
+    }
    
 }
 

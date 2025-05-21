@@ -47,9 +47,9 @@ export function TrackOrder() {
             <img src={cover} className={styles.cover} alt="" />
             <Steps phase={order.phase} />
             <article>
-                <p>Order number: <span>{order._id}</span></p>
+                <p>Order number: <span>{order._id.slice(-8).toUpperCase()}</span></p>
                 <p>Ordered from: <span>{order.restaurant}</span></p>
-                <p>Ordered on: <time dateTime={order.createdAt.toLocaleString()}></time></p>
+                <p>Ordered on: <time dateTime={order.createdAt}>{new Date(order.createdAt).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })}</time></p>
             </article>
             <OrderDetails order={order} />            
         </main>

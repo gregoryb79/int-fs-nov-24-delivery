@@ -7,10 +7,6 @@ import { OrderDetails } from "./components/OrderDetails";
 import { useOrder } from "../hooks/useOrder";
 import { useParams } from "react-router";
 
-const timestampFormater = new Intl.DateTimeFormat("he", {
-    timeStyle: "short",
-    dateStyle: "short",
-});
 
 export function HandleOrder() {
     
@@ -51,9 +47,9 @@ export function HandleOrder() {
             {loading && <Spinner/>} 
             <Steps phase={order.phase} updatePhase={updatePhase} loading={loading} />
             <article>
-                <p>Order number: <span>{order._id}</span></p>
+                <p>Order number: <span>{order._id.slice(-8).toUpperCase()}</span></p>
                 <p>Ordered from: <span>{order.restaurant}</span></p>
-                <p>Ordered on: <time dateTime={order.createdAt.toString()}>{timestampFormater.format(order.timestamp)}</time></p>
+                <p>Ordered on: <time dateTime={order.createdAt}>{new Date(order.createdAt).toLocaleString("he-IL", { dateStyle: "short", timeStyle: "short" })}</time></p>
             </article>
             <OrderDetails order={order}/>
         </main>
@@ -85,7 +81,7 @@ function Steps({ phase, updatePhase, loading }: StepsProps) {
         <div className={styles.stepsContainer} style={{ "--step": currentStep }} aria-disabled={loading}>
             <div
                 className={styles.step}
-                data-active={isActive("received")}
+                data-active={isActive("Received")}
                 onClick={() => !loading && updatePhase(0)} 
                 onKeyDown={(event) => handleKeyDown(event, 0)} 
                 role="button"
@@ -96,7 +92,7 @@ function Steps({ phase, updatePhase, loading }: StepsProps) {
             </div>
             <div
                 className={styles.step}
-                data-active={isActive("opened")}
+                data-active={isActive("Opened")}
                 onClick={() => !loading && updatePhase(1)}
                 onKeyDown={(event) => handleKeyDown(event, 1)}
                 role="button"
@@ -107,7 +103,7 @@ function Steps({ phase, updatePhase, loading }: StepsProps) {
             </div>
             <div
                 className={styles.step}
-                data-active={isActive("making")}
+                data-active={isActive("Making")}
                 onClick={() => !loading && updatePhase(2)}
                 onKeyDown={(event) => handleKeyDown(event, 2)}
                 role="button"
@@ -118,7 +114,7 @@ function Steps({ phase, updatePhase, loading }: StepsProps) {
             </div>
             <div
                 className={styles.step}
-                data-active={isActive("ready")}
+                data-active={isActive("Ready")}
                 onClick={() => !loading && updatePhase(3)}
                 onKeyDown={(event) => handleKeyDown(event, 3)}
                 role="button"
@@ -129,7 +125,7 @@ function Steps({ phase, updatePhase, loading }: StepsProps) {
             </div>
             <div
                 className={styles.step}
-                data-active={isActive("picked-up")}
+                data-active={isActive("Picked-up")}
                 onClick={() => !loading && updatePhase(4)}
                 onKeyDown={(event) => handleKeyDown(event, 4)}
                 role="button"
@@ -140,7 +136,7 @@ function Steps({ phase, updatePhase, loading }: StepsProps) {
             </div>
             <div
                 className={styles.step}
-                data-active={isActive("arrived")}
+                data-active={isActive("Arrived")}
                 onClick={() => !loading && updatePhase(5)}
                 onKeyDown={(event) => handleKeyDown(event, 5)}
                 role="button"

@@ -2,6 +2,7 @@ import express from 'express';
 import { Order } from '../models/order.model';
 import mongoose from 'mongoose';
 import { authenticate } from '../middleware/authenticate';
+import bodyParser from 'body-parser';
 
 export const router = express.Router();
 
@@ -51,7 +52,7 @@ router.post('/', async (req, res) => {
         return;
     }       
 
-    const newOrder = new Order ({items: order.items, phase: "received", restaurant: order?.restaurant});
+    const newOrder = new Order ({items: order.items, phase: "Received", restaurant: order?.restaurant});
     console.log(`new order`, newOrder);
     try {
         await newOrder.save();
@@ -60,4 +61,38 @@ router.post('/', async (req, res) => {
         console.error('Error creating new order:', error);
         res.status(500).json({ error: 'Error creating new order at DB' });
     }
+});
+
+router.put('/:id', async (req, res) => {
+    const id = req.params.id;
+    console.log(`updating order with id ${id}`);
+    const order = req.body;
+    
+    if (!mongoose.isValidObjectId(id)) {
+        res.status(400);
+        res.send(`Invalid order id: ${id}`);
+        return;
+    }      
+
+    try {
+        const orderToUpdate = await Order.findById(id);        
+
+        if (!orderToUpdate) {
+            res.status(404);
+            res.send(`Order with id ${id} not found`);
+            return;
+        }
+        orderToUpdate.phase = order.phase;
+        try {
+            await orderToUpdate.save();
+            res.status(201).json(orderToUpdate._id);
+        } catch (error) {
+            console.error('Error saving updated order:', error);
+            res.status(500).json({ error: 'Error updating order at DB' });
+        }
+        
+    } catch (error) {
+        console.error(`Error updating order id = ${id}:`, error);
+        res.status(500).json({ error: `error updating order ${id} in DB`});
+    }    
 });
