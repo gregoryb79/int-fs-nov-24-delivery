@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { Main } from "../components/Main";
 import { PrimaryButton } from "../components/PrimaryButton";
@@ -7,6 +7,16 @@ import styles from "./Login.module.scss";
 
 export function Login() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+
+    useEffect(() => {
+        const rootElement = document.getElementById("root");
+
+        rootElement?.style.setProperty("--root-justify-content", "center");
+
+        return () => {
+            rootElement?.style.setProperty("--root-justify-content", null);
+        };
+    }, []);
 
     function togglePasswordVisibility() {
         setIsPasswordVisible(!isPasswordVisible);
