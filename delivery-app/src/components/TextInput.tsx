@@ -1,10 +1,16 @@
+import { useId, type InputHTMLAttributes } from "react";
 import styles from "./TextInput.module.scss";
 
-export function TextInput() {
+export type TextInputProps = InputHTMLAttributes<HTMLInputElement> & { id: string, name: string, label: string };
+
+export function TextInput({ id, label, ...props }: TextInputProps) {
+    const baseId = useId();
+    const labelId = `${baseId}_label`;
+
     return (
         <div className={styles.formField}>
-            <label htmlFor="email">Email</label>
-            <input type="email" name="email" id="email" required />
+            <label id={labelId} htmlFor={id}>{label}</label>
+            <input id={id} aria-labelledby={labelId} {...props} />
         </div>
     );
 }
