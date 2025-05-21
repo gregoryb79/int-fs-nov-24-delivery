@@ -19,21 +19,9 @@
 
     &[data-overflow] {
         overflow: visible;
-    }
+    }   
 
-    &[data-login] {
-        --max-width: 40ch;
-        max-height: 20ch;
-        gap: 0.5rem;
-        padding: 0;
-        align-items: center;
-    }
-
-    &[data-register] {
-        --max-width: 40ch;
-        max-height: 35ch;
-        gap: 0.5rem;
-        padding: 0;
-        align-items: center;
+     &[data-fit-content] {
+        flex: unset;
     }
 }
