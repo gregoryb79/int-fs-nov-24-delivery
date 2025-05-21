@@ -1,0 +1,48 @@
+:root {
+    --root-justify-content: center;
+}
+
+.nav {
+    text-align: center;
+    margin-block-start: -1.5em;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.formField {
+    display: flex;
+    flex-direction: column;
+
+    label {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    input {
+        border: 1px solid currentColor;
+        border-radius: 8px;
+        padding: 0.2rem 0.3rem;
+    }
+}
+
+.passwordContainer {
+    position: relative;
+
+    input {
+        width: 100%;
+    }
+}
+
+.togglePasswordVisibilityButton {
+    border: none;
+    background: none;
+    cursor: pointer;
+    position: absolute;
+
+    top: 0.2rem;
+    right: 0;
+}

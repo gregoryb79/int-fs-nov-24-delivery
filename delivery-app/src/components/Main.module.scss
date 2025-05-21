@@ -20,4 +20,8 @@
     &[data-overflow] {
         overflow: visible;
     }
+
+    &[data-fit-content] {
+        flex: unset;
+    }
 }
