@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TextInput, type TextInputProps } from "./TextInput";
+import { Input, type TextInputProps } from "./Input";
 
 import styles from "./PasswordInput.module.scss";
 
@@ -14,7 +14,7 @@ export function PasswordInput(props: PasswordInputProps) {
 
     return (
         <div className={styles.passwordContainer}>
-            <TextInput type={isPasswordVisible ? "text" : "password"} {...props} />
+            <Input type={isPasswordVisible ? "text" : "password"} {...props} />
             <button
                 className={styles.togglePasswordVisibilityButton}
                 type="button"

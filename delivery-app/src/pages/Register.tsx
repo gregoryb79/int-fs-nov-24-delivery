@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { useCenterRoot } from "../hooks/useCenterRoot";
 import { Main } from "../components/Main";
 import { PrimaryButton } from "../components/PrimaryButton";
-import { TextInput } from "../components/TextInput";
+import { Input } from "../components/Input";
 import { PasswordInput } from "../components/PasswordInput";
 
 import styles from "./Register.module.scss";
@@ -23,7 +23,7 @@ export function Register() {
             <Main fitContent>
                 <h1>Register</h1>
                 <form className={styles.form} action={register}>
-                    <TextInput type="email" id="email" label="Email" name="email" required />
+                    <Input type="email" id="email" label="Email" name="email" required />
                     <SetPasswordField />
                     <PrimaryButton>Register</PrimaryButton>
                 </form>

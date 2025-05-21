@@ -1,9 +1,9 @@
 import { useId, type InputHTMLAttributes } from "react";
-import styles from "./TextInput.module.scss";
+import styles from "./Input.module.scss";
 
 export type TextInputProps = InputHTMLAttributes<HTMLInputElement> & { id: string, name: string, label: string };
 
-export function TextInput({ id, label, ...props }: TextInputProps) {
+export function Input({ id, label, ...props }: TextInputProps) {
     const baseId = useId();
     const labelId = `${baseId}_label`;
 
