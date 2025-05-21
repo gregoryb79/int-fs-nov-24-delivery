@@ -1,22 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
+import { useCenterRoot } from "../hooks/useCenterRoot";
 import { Main } from "../components/Main";
 import { PrimaryButton } from "../components/PrimaryButton";
+import { TextInput } from "../components/TextInput";
 
 import styles from "./Login.module.scss";
 
 export function Login() {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-    useEffect(() => {
-        const rootElement = document.getElementById("root");
-
-        rootElement?.style.setProperty("--root-justify-content", "center");
-
-        return () => {
-            rootElement?.style.setProperty("--root-justify-content", null);
-        };
-    }, []);
+    useCenterRoot();
 
     function togglePasswordVisibility() {
         setIsPasswordVisible(!isPasswordVisible);
@@ -34,10 +28,7 @@ export function Login() {
             <Main fitContent>
                 <h1>Login</h1>
                 <form className={styles.form} action={login}>
-                    <div className={styles.formField}>
-                        <label htmlFor="email">Email</label>
-                        <input type="email" name="email" id="email" required />
-                    </div>
+                    <TextInput />
                     <div className={styles.formField}>
                         <label htmlFor="password">Password</label>
                         <div className={styles.passwordContainer}>
