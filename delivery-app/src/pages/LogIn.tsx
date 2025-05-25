@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+
 import { Main } from '../components/Main';
 import styles from './LogIn.module.scss';
 import { Link } from 'react-router';
@@ -7,9 +7,8 @@ import { TextInput } from '../components/TextInput';
 import { PasswordInput } from '../components/PasswordInput';
 
 
-export function LogIn() {
-   
-    // const [showPassword, setShowPassword] = useState(false);
+export function LogIn() {   
+    
 
     function login(formData: FormData) {
         console.log(Object.fromEntries(formData));
