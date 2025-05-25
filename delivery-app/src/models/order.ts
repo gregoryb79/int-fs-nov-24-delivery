@@ -1,4 +1,5 @@
 import type { Item } from "./item";
+import api from "../models/api";
 
 export const orderPhases = [
     "received",
@@ -22,23 +23,20 @@ export type Order = {
 export type OrderList = Omit<Order, "items">[];
 
 export async function listOrders(): Promise<OrderList> {
-    const res = await fetch("http://localhost:5000/orders", {
-        headers: {
-            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
-        }
-    });
+    const res = await api.get("/orders");
 
-    return res.json();
+    return res.data as OrderList;
 }
 
 export async function getOrderById(id: string): Promise<Order> {
-    const res = await fetch(`http://localhost:5000/orders/${id}`);
-
-    if (!res.ok) {
-        throw new Error(await res.text());
+    
+    try {
+        const res = await api.get(`/orders/${id}`);  
+        return res.data as Order;
+    }catch (error) {
+        console.error(error);
+        throw new Error("Failed to fetch order details");
     }
-
-    return res.json();
 }
 
 export const timestampFormater = new Intl.DateTimeFormat("he", {

@@ -1,3 +1,5 @@
+import api from "./api";
+
 export type Item = {
     _id: string,
     name: string,
@@ -7,8 +9,11 @@ export type Item = {
 };
 
 export async function getItems(): Promise<Item[]> {
-    const res = await fetch("http://localhost:5000/items");
-    const items = await res.json();
-
-    return items;
+    try {
+        const res = await api.get("/items");
+        return res.data as Item[];
+    }catch (error) {
+        console.error("Failed to fetch items:", error); 
+        throw new Error("Failed to fetch items");
+    }    
 }

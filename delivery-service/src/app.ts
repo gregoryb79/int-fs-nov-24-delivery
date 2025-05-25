@@ -19,7 +19,7 @@ app.use((req, _, next) => {
 app.use(json());
 
 function createToken(userId: string) {
-    return jwt.sign({ sub: userId }, process.env.SESSION_SECRET!, { expiresIn: 60 * 10 });
+    return jwt.sign({ sub: userId }, process.env.SESSION_SECRET!, { expiresIn: 60 * 60 });
 }
 
 app.post("/register", async (req, res) => {
