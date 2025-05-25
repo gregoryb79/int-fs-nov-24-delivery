@@ -12,6 +12,14 @@ import { NotFound } from "./pages/NotFound";
 import { getItems } from "./models/item";
 import { getOrderById, listOrders } from "./models/order";
 
+function requireAuth() {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    throw redirect("/login");
+  }
+  return null;
+}
+
 export const router = createBrowserRouter([
     {
         path: "/login",
@@ -31,6 +39,7 @@ export const router = createBrowserRouter([
                 path: "/order-history",
                 Component: OrderHistory,
                 loader() {
+                    requireAuth();
                     return listOrders();
                 },
             },
@@ -38,6 +47,7 @@ export const router = createBrowserRouter([
                 path: "/new-order",
                 Component: NewOrder,
                 loader() {
+                    requireAuth();
                     return getItems();
                 },
             },
@@ -45,6 +55,7 @@ export const router = createBrowserRouter([
                 path: "/track-order/:orderId",
                 Component: TrackOrder,
                 loader({ params }) {
+                    requireAuth();
                     return getOrderById(params.orderId as string);
                 },
             },
