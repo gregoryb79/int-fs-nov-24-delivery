@@ -9,21 +9,31 @@ import { NewOrder } from "./pages/NewOrder";
 import { TrackOrder } from "./pages/TrackOrder";
 import { NotFound } from "./pages/NotFound";
 
+import { getToken } from "./models/apiClient";
 import { getItems } from "./models/item";
 import { getOrderById, listOrders } from "./models/order";
+import { HandleAuthorizationError } from "./HandleAuthorizationError";
 
 export const router = createBrowserRouter([
     {
         path: "/login",
         Component: Login,
+        loader: redirectHomeLoggedInUsers,
     },
     {
         path: "/register",
         Component: Register,
+        loader: redirectHomeLoggedInUsers,
     },
     {
         path: "/",
         Component: App,
+        loader: () => {
+            if (!getToken()) {
+                return redirect("/login");
+            }
+        },
+        ErrorBoundary: HandleAuthorizationError,
         children: [
             { index: true, loader: () => redirect("/order-history") },
             { path: "*", Component: NotFound },
@@ -51,3 +61,10 @@ export const router = createBrowserRouter([
         ],
     },
 ]);
+
+function redirectHomeLoggedInUsers() {
+    if (getToken()) {
+        return redirect("/");
+    }
+}
+

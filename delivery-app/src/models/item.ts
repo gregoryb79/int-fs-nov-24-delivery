@@ -1,3 +1,5 @@
+import { apiClient } from "./apiClient";
+
 export type Item = {
     _id: string,
     name: string,
@@ -7,8 +9,7 @@ export type Item = {
 };
 
 export async function getItems(): Promise<Item[]> {
-    const res = await fetch("http://localhost:5000/items");
-    const items = await res.json();
-
-    return items;
+    const res = await apiClient.get("/items");
+    
+    return res.data;
 }

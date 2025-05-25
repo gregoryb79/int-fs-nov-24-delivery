@@ -1,4 +1,5 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { apiClient, setToken } from "../models/apiClient";
 import { useCenterRoot } from "../hooks/useCenterRoot";
 import { Main } from "../components/Main";
 import { PrimaryButton } from "../components/PrimaryButton";
@@ -8,22 +9,18 @@ import { PasswordInput } from "../components/PasswordInput";
 import styles from "./Login.module.scss";
 
 export function Login() {
+    const navigate = useNavigate();
+
     useCenterRoot();
 
     async function login(formData: FormData) {
         const user = Object.fromEntries(formData);
-        const body = JSON.stringify(user);
-        const res = await fetch("http://localhost:5000/login", {
-            method: "POST",
-            body,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        const res = await apiClient.post("/login", user);
 
-        const { token } = await res.json();
+        const { token } = res.data;
 
-        sessionStorage.setItem("token", token);
+        setToken(token);
+        navigate("/");
     }
 
     return (

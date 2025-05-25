@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLoaderData, useNavigate } from "react-router";
 import { Main } from "../components/Main";
+import { apiClient } from "../models/apiClient";
 import { type Item } from "../models/item";
 import { PrimaryButton } from "../components/PrimaryButton";
 
@@ -91,16 +92,10 @@ function OrderSummary({ order }: OrderSummaryProps) {
             </ul>
             <PrimaryButton onClick={async () => {
                 try {
-                    await fetch("http://localhost:5000/orders", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            phase: "received",
-                            restaurant: "INT cafe",
-                            items: Object.entries(order).map(([itemId, quantity]) => ({ itemId, quantity })),
-                        }),
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
+                    await apiClient.post("/orders", {
+                        phase: "received",
+                        restaurant: "INT cafe",
+                        items: Object.entries(order).map(([itemId, quantity]) => ({ itemId, quantity })),
                     });
 
                     navigate("/order-history");
