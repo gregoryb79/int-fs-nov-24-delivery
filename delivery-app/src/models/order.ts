@@ -1,5 +1,5 @@
 import type { Item } from "./item";
-import api from "../models/api";
+import {api} from "./api";
 
 export const orderPhases = [
     "received",
