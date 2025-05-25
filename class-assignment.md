@@ -4,3 +4,6 @@
 3. guard routes in frontend - redirect annonymouse users to login page (and vice-versa)
 4. refactor app.ts - move authentication code to another file
 5. implement logout and account details
+6. handle order not found error in track-order page
+
+** Bonus - implement refresh mechanism

@@ -1,0 +1,19 @@
+.button {
+    background: var(--background-100);
+    border: 1px solid currentColor;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: 600;
+    line-height: 1;
+    font-size: 0.8rem;
+    border-radius: 2rem;
+    padding: 0.5rem 1rem;
+
+    &:hover {
+        background: var(--background-400);
+    }
+
+    &:active {
+        background: var(--background-600);
+    }
+}

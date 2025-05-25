@@ -1,13 +1,17 @@
 .navContainer {
     position: sticky;
     top: 0;
+    padding: 1rem;
+
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .appNav {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    padding: 1rem;
 
     a {
         color: var(--primary-600);
@@ -16,4 +20,11 @@
             color: var(--primary-500);
         }
     }
+}
+
+.accountInfo {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: baseline;
 }
