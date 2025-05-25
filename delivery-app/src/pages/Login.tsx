@@ -10,8 +10,20 @@ import styles from "./Login.module.scss";
 export function Login() {
     useCenterRoot();
 
-    function login(formData: FormData) {
-        console.log(Object.fromEntries(formData));
+    async function login(formData: FormData) {
+        const user = Object.fromEntries(formData);
+        const body = JSON.stringify(user);
+        const res = await fetch("http://localhost:5000/login", {
+            method: "POST",
+            body,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const { token } = await res.json();
+
+        sessionStorage.setItem("token", JSON.stringify(token));
     }
 
     return (

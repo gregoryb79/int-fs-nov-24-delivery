@@ -11,8 +11,20 @@ import styles from "./Register.module.scss";
 export function Register() {
     useCenterRoot();
 
-    function register(formData: FormData) {
-        console.log(Object.fromEntries(formData));
+    async function register(formData: FormData) {
+        const user = Object.fromEntries(formData);
+        const body = JSON.stringify(user);
+        const res = await fetch("http://localhost:5000/register", {
+            method: "POST",
+            body,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        const { token } = await res.json();
+
+        sessionStorage.setItem("token", JSON.stringify(token));
     }
 
     return (
