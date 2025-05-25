@@ -20,14 +20,24 @@ function requireAuth() {
   return null;
 }
 
+function redirectIfLoggedIn() {
+  const token = sessionStorage.getItem("token");
+  if (token) {
+    throw redirect("/");
+  }
+  return null;
+}
+
 export const router = createBrowserRouter([
     {
         path: "/login",
         Component: Login,
+        loader: redirectIfLoggedIn,
     },
     {
         path: "/register",
         Component: Register,
+        loader: redirectIfLoggedIn,
     },
     {
         path: "/",
