@@ -1,6 +1,8 @@
 import express from "express";
 import { json } from "body-parser";
 import cors from "cors";
+import jwt from "jsonwebtoken";
+import { expressjwt } from "express-jwt";
 import { User } from "./models/user";
 import { router as itemsRouter } from "./routers/items";
 import { router as ordersRouter } from "./routers/orders";
@@ -17,7 +19,7 @@ app.use((req, _, next) => {
 app.use(json());
 
 function createToken(userId: string) {
-    return { sub: userId };
+    return jwt.sign({ sub: userId }, process.env.SESSION_SECRET!, { expiresIn: 60 * 10 });
 }
 
 app.post("/register", async (req, res) => {
@@ -86,12 +88,10 @@ app.post("/login", async (req, res) => {
     }
 });
 
-app.use((req, res, next) => {
-    console.log(req.headers);
-
-    res.setHeader("Set-Cookie", "id=a3fWa; Expires=Wed, 21 Oct 2026 07:28:00 GMT");
-    next();
-});
+app.use(expressjwt({
+    algorithms: ["HS256"],
+    secret: process.env.SESSION_SECRET!,
+}));
 
 app.use("/items", itemsRouter);
 app.use("/orders", ordersRouter);

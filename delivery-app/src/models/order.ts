@@ -22,7 +22,11 @@ export type Order = {
 export type OrderList = Omit<Order, "items">[];
 
 export async function listOrders(): Promise<OrderList> {
-    const res = await fetch("http://localhost:5000/orders");
+    const res = await fetch("http://localhost:5000/orders", {
+        headers: {
+            "Authorization": `Bearer ${sessionStorage.getItem("token")}`
+        }
+    });
 
     return res.json();
 }

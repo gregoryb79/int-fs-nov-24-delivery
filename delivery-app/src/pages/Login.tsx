@@ -23,7 +23,7 @@ export function Login() {
 
         const { token } = await res.json();
 
-        sessionStorage.setItem("token", JSON.stringify(token));
+        sessionStorage.setItem("token", token);
     }
 
     return (
