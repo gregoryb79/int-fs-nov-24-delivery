@@ -5,26 +5,40 @@ import { Main } from "../components/Main";
 import { PrimaryButton } from "../components/PrimaryButton";
 import { Input } from "../components/Input";
 import { PasswordInput } from "../components/PasswordInput";
+import { useNavigate } from "react-router";
 
 import styles from "./Register.module.scss";
 
 export function Register() {
     useCenterRoot();
+    const navigate = useNavigate();
 
     async function register(formData: FormData) {
         const user = Object.fromEntries(formData);
         const body = JSON.stringify(user);
-        const res = await fetch("http://localhost:5000/register", {
-            method: "POST",
-            body,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        try {
+            const res = await fetch("http://localhost:5000/register", {
+                method: "POST",
+                body,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            if (!res.ok) {
+                if (res.status === 409) {
+                    throw new Error("User with this email already exists");
+                }
+                throw new Error("Failed to register");
+            }
 
-        const { token } = await res.json();
+            const { token } = await res.json();
 
-        sessionStorage.setItem("token", token);
+            sessionStorage.setItem("token", token);
+            navigate("/");
+        } catch (err) {
+            console.error(err);
+            alert(err instanceof Error ? err.message : "An unexpected error occurred");
+        }      
     }
 
     return (
