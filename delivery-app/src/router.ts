@@ -13,6 +13,7 @@ import { getToken } from "./models/apiClient";
 import { getItems } from "./models/item";
 import { getOrderById, listOrders } from "./models/order";
 import { HandleAuthorizationError } from "./HandleAuthorizationError";
+import { HandleOrderNotFoundError } from "./HandleOrderNotFoundError";
 
 export const router = createBrowserRouter([
     {
@@ -57,6 +58,7 @@ export const router = createBrowserRouter([
                 loader({ params }) {
                     return getOrderById(params.orderId as string);
                 },
+                ErrorBoundary: HandleOrderNotFoundError,
             },
         ],
     },
