@@ -19,7 +19,7 @@ function createToken(userId: string, userName: string ) {
 
 const register: RequestHandler = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, username } = req.body;
 
         if (!email) {
             res.status(400);
@@ -34,12 +34,21 @@ const register: RequestHandler = async (req, res) => {
             res.send(`User with email ${email} already exists`);
             return;
         }
-
-        // TODO: validate password
-        const newUser = await User.create({ email, password });
+        if (!username) {
+            res.status(400);
+            res.send("fullName is required");
+            return;
+        }
+        if (!password || (password.length < 8) || !password.match(/[a-z]/) 
+                        || !password.match(/[A-Z]/) || !password.match(/[0-9]/)) {
+            res.status(400);
+            res.send("password doesnt meet requirements");
+            return;
+        }
+        const newUser = await User.create({ email, password, username });
 
         res.json({
-            token: createToken(newUser.id, newUser.fullName),
+            token: createToken(newUser.id, newUser.username),
         });
     } catch (err) {
         console.error(err);
@@ -73,7 +82,7 @@ const login: RequestHandler = async (req, res) => {
         }
 
         res.json({
-            token: createToken(user.id, user.fullName),
+            token: createToken(user.id, user.username),
         });
     } catch (err) {
         console.error(err);

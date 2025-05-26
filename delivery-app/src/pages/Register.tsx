@@ -16,9 +16,10 @@ export function Register() {
 
     async function register(formData: FormData) {
         const user = Object.fromEntries(formData);
+        console.log("Registering user", user);
         const res = await apiClient.post("/register", user);
 
-        const { token } = res.data;
+        const { token } = res.data as { token: string };
 
         setToken(token);
         navigate("/");
@@ -33,6 +34,7 @@ export function Register() {
                 <h1>Register</h1>
                 <form className={styles.form} action={register}>
                     <Input type="email" id="email" label="Email" name="email" required />
+                    <Input type="text" id="username" label="Full Name" name="username" required />
                     <SetPasswordField />
                     <PrimaryButton>Register</PrimaryButton>
                 </form>
