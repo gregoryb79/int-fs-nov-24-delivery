@@ -1,3 +1,4 @@
+import { createHash } from "crypto";
 import { Schema, model } from "mongoose";
 
 const schema = new Schema({
@@ -8,6 +9,14 @@ const schema = new Schema({
     password: {
         type: String,
         required: true,
+        select: false,
+        set(newPassword: string) {
+            const hash = createHash("sha512");
+
+            hash.update(newPassword);
+
+            return hash.digest("base64");
+        },
     },
     fullName: {
         type: String,

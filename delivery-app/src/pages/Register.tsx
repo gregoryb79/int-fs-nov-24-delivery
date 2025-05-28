@@ -8,20 +8,30 @@ import { Input } from "../components/Input";
 import { PasswordInput } from "../components/PasswordInput";
 
 import styles from "./Register.module.scss";
+import { isAxiosError } from "axios";
 
 export function Register() {
+    const [registerError, setRegisterError] = useState("");
     const navigate = useNavigate();
 
     useCenterRoot();
 
     async function register(formData: FormData) {
-        const user = Object.fromEntries(formData);
-        const res = await apiClient.post("/register", user);
+        try {
+            const user = Object.fromEntries(formData);
+            const res = await apiClient.post("/register", user);
 
-        const { token } = res.data;
+            const { token } = res.data;
 
-        setToken(token);
-        navigate("/");
+            setToken(token);
+            navigate("/");
+        } catch (err) {
+            if (!isAxiosError(err) || err.status !== 409) {
+                throw err;
+            }
+
+            setRegisterError("Email already taken.");
+        }
     }
 
     return (
@@ -36,6 +46,7 @@ export function Register() {
                     <Input id="fullName" label="Full name" name="fullName" required />
                     <SetPasswordField />
                     <PrimaryButton>Register</PrimaryButton>
+                    {registerError && <p className={styles.errorMessage}>{registerError}</p>}
                 </form>
             </Main>
         </>
