@@ -33,6 +33,7 @@ export function Register() {
                 <h1>Register</h1>
                 <form className={styles.form} action={register}>
                     <Input type="email" id="email" label="Email" name="email" required />
+                    <Input id="fullName" label="Full name" name="fullName" required />
                     <SetPasswordField />
                     <PrimaryButton>Register</PrimaryButton>
                 </form>

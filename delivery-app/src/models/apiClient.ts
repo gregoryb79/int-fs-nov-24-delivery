@@ -4,9 +4,6 @@ export const tokenKeyName = "token";
 
 export const apiClient = axios.create({
     baseURL: "http://localhost:5000",
-    // headers: {
-    //     Authorization: `Bearer ${getToken()}`,
-    // }
 });
 
 apiClient.interceptors.request.use((config) => {
