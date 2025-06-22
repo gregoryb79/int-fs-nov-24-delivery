@@ -3,7 +3,7 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     passwordHash VARCHAR(100) NOT NULL,
     fullName VARCHAR(100) NOT NULL,
-    createdAt DATETIME NOT NULL
+    createdAt INT NOT NULL
 );
 
 CREATE TABLE orders (

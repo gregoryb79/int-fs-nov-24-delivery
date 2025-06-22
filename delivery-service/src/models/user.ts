@@ -1,38 +1,38 @@
-import { createHash } from "crypto";
-import { Document, Schema, model } from "mongoose";
+import { createHash, randomUUID } from "crypto";
+import { dbClient } from "./db";
 
-const schema = new Schema({
-    email: {
-        type: String,
-        required: true,
-    },
-    password: {
-        type: String,
-        select: false,
-        set(newPassword: string) {
-            if (!(this instanceof Document) || this.isNew) {
-                throw new Error();
-            }
+export async function isEmailTaken(email: string) {
+    const res = await dbClient.execute(`SELECT * FROM users WHERE email = "${email}"`);
 
-            return hashPasswordWithSalt(newPassword, this.get("createdAt"));
-        },
-    },
-    fullName: {
-        type: String,
-        required: true,
+    return !!res.rows.length;
+}
+
+export async function createUser(email: string, password: string, fullName: string) {
+    const id = randomUUID();
+    const createdAt = new Date();
+    const passwordHash = hashPasswordWithSalt(password, createdAt);
+
+    await dbClient.execute(`INSERT INTO users (id, email, passwordHash, fullName, createdAt)
+VALUES ("${id}", "${email}", "${passwordHash}", "${fullName}", ${createdAt.valueOf()})`);
+
+    return id;
+}
+
+export async function getByCredentials(email: string, password: string) {
+    const res = await dbClient.execute(`SELECT * FROM users WHERE email = "${email}"`);
+
+    if (res.rows.length !== 1) {
+        throw new Error();
     }
-}, {
-    timestamps: true,
-    methods: {
-        isSamePassword(password: string) {
-            const hash = hashPasswordWithSalt(password, this.get("createdAt"));
 
-            return this.password === hash;
-        }
+    const { id, passwordHash, fullName, createdAt } = res.rows[0];
+    
+    if (passwordHash !== hashPasswordWithSalt(password, new Date(createdAt as string))) {
+        throw new Error();
     }
-});
 
-export const User = model("User", schema);
+    return { id, email, fullName, createdAt };
+}
 
 function hashPasswordWithSalt(password: string, salt: Date) {
     const hash = createHash("sha512");
