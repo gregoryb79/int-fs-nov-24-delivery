@@ -50,16 +50,16 @@ export type Order = {
     phase: OrderPhase,
     createdAt: string,
     restaurant: string,  
-    items: { item: Item, quantity: number }[]  
+    items: { id: string, quantity: number }[]  
 };
 
-export type Item = {
-    id: string,
-    name: string,
-    description: string,
-    previewImageUrl: string,
-    priceInAgorot: number,
-};
+// export type Item = {
+//     id: string,
+//     name: string,
+//     description: string,
+//     previewImageUrl: string,
+//     priceInAgorot: number,
+// };
 
 import { client } from "./sqlSetup";
 
@@ -100,8 +100,16 @@ export async function createOrder(order: Order, userId: string) {
         );        
         console.log("Order created in orders table");
 
-        const values = order.items.flatMap(item => [orderId, item.item.id, item.quantity]);        
-        await client.execute(`INSERT INTO orderItems (orderId, itemId, quantity) VALUES (?, ?, ?)`, values);                
+        if (order.items.length > 0) {
+          const placeholders = order.items.map(() => "(?, ?, ?)").join(", ");
+          console.log("Inserting items into orderItems table with placeholders:", placeholders);
+          const values = order.items.flatMap(item => [orderId, item.id, item.quantity]);
+          console.log("Inserting items into orderItems table with values:", values);
+          await client.execute(
+            `INSERT INTO orderItems (orderId, itemId, quantity) VALUES ${placeholders}`,
+            values
+          );
+        }
         console.log("items created in orderItems table");
 
         console.log(`SQL query createOrder executed successfully for orderId: ${orderId}`);
