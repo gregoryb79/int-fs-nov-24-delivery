@@ -2,9 +2,23 @@ import { createHash, randomUUID } from "crypto";
 import { dbClient } from "./db";
 
 export async function isEmailTaken(email: string) {
-    const res = await dbClient.execute(`SELECT * FROM users WHERE email = "${email}"`);
-
-    return !!res.rows.length;
+    if (!email) {
+        throw new Error("Email is required");
+    }
+    if (typeof email !== "string") {
+        throw new Error("Email must be a string");
+    }
+    if (email.length < 5 || email.length > 255) {
+        throw new Error("Email must be between 5 and 255 characters");
+    }
+    try {
+        const res = await dbClient.execute(`SELECT * FROM users WHERE email = ?`, [email]);
+        return !!res.rows.length;
+    }catch (error) {
+        console.error("Error checking if email is taken:", error);
+        throw new Error("Failed to check email");
+    }
+    
 }
 
 export async function createUser(email: string, password: string, fullName: string) {
@@ -12,10 +26,17 @@ export async function createUser(email: string, password: string, fullName: stri
     const createdAt = new Date();
     const passwordHash = hashPasswordWithSalt(password, createdAt);
 
-    await dbClient.execute(`INSERT INTO users (id, email, passwordHash, fullName, createdAt)
-VALUES ("${id}", "${email}", "${passwordHash}", "${fullName}", ${createdAt.valueOf()})`);
+    try {
+        await dbClient.execute(`INSERT INTO users (id, email, passwordHash, fullName, createdAt)
+                            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)`,
+                            [id, email, passwordHash, fullName]);
 
-    return id;
+        return id;
+    }catch(error) {
+        console.error("Error creating user:", error);
+        throw new Error("Failed to create user");
+    }
+    
 }
 
 export async function getByCredentials(email: string, password: string) {
