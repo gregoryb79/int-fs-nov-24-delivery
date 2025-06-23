@@ -1,12 +1,13 @@
 import { Router } from "express";
-import { Order } from "../models/order";
-import { Types } from "mongoose";
+import { createOrder, getAllOrders, getOrderById} from "../models/order";
+// import { Types } from "mongoose";
 
 export const router = Router();
 
 router.post("/", async (req, res) => {
     try {
-        await Order.create(req.body);
+        const userId = req.auth?.sub;
+        await createOrder(req.body,userId);
 
         res.status(201);
         res.end();
@@ -19,7 +20,7 @@ router.post("/", async (req, res) => {
 
 router.get("/", async (_, res) => {
     try {
-        const orders = await Order.find();
+        const orders = await getAllOrders();
 
         res.json(orders);
     } catch (err) {
@@ -31,26 +32,7 @@ router.get("/", async (_, res) => {
 
 router.get("/:id", async (req, res) => {
     try {
-        const [order] = await Order.aggregate([
-            { $match: { _id: new Types.ObjectId(req.params.id) } },
-            { $lookup: {
-                from: "items",
-                localField: "items.itemId",
-                foreignField: "_id",
-                as: "items",
-                let: { items: "$items" },
-                pipeline: [
-                    { $replaceWith: {
-                        item: "$$ROOT",
-                        quantity: {
-                            $arrayElemAt: ["$$items.quantity", {
-                                $indexOfArray: ["$$items.itemId", "$$ROOT._id"],
-                            }],
-                        },
-                    } },
-                ],
-            } },
-        ]);
+        const order = await getOrderById(req.params.id);
 
         if (!order) {
             res.status(404);
