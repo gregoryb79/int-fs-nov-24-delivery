@@ -40,19 +40,27 @@ export async function createUser(email: string, password: string, fullName: stri
 }
 
 export async function getByCredentials(email: string, password: string) {
-    const res = await dbClient.execute(`SELECT * FROM users WHERE email = "${email}"`);
-
-    if (res.rows.length !== 1) {
-        throw new Error();
+    if (!email || !password) {
+        throw new Error("Email and password are required");
     }
+    try{
+        const res = await dbClient.execute(`SELECT * FROM users WHERE email = ?`, [email]);
 
-    const { id, passwordHash, fullName, createdAt } = res.rows[0];
-    
-    if (passwordHash !== hashPasswordWithSalt(password, new Date(createdAt as string))) {
-        throw new Error();
+        if (res.rows.length !== 1) {
+            throw new Error();
+        }
+
+        const { id, passwordHash, fullName, createdAt } = res.rows[0];
+        
+        if (passwordHash !== hashPasswordWithSalt(password, new Date(createdAt as string))) {
+            throw new Error();
+        }
+
+        return { id, email, fullName, createdAt };
+    } catch (error) {
+        console.error("Error getting user by credentials:", error);
+        throw new Error("Error getting user by credentials");
     }
-
-    return { id, email, fullName, createdAt };
 }
 
 function hashPasswordWithSalt(password: string, salt: Date) {
