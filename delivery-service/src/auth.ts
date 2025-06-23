@@ -13,7 +13,7 @@ export function useAuth(app: Application) {
 }
 
 function createToken(userId: string, userName: string ) {
-    return jwt.sign({ sub: userId, userName }, process.env.SESSION_SECRET!, { expiresIn: 60 * 10 });
+    return jwt.sign({ sub: userId, userName }, process.env.SESSION_SECRET!, { expiresIn: 60 * 60 * 24 });
 }
 
 const register: RequestHandler = async (req, res) => {
